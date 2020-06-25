@@ -7,6 +7,10 @@ const taskSchema = new Schema({
         required: true,
         default: "Task"
     },
+    responsibles: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Student'
+    },
     type: {
         type: String,
         enum: ['document', 'custom'],

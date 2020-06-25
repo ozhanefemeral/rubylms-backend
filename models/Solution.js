@@ -28,7 +28,6 @@ const solutionSchema = new Schema({
 })
 
 solutionSchema.pre('save', async function (next) {
-    console.log(this);
     const task = await mongoose.model('Task').findById(this.task);
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {

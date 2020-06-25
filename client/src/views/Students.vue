@@ -1,7 +1,12 @@
 <template>
   <div>
     <h1>Students</h1>
-    <CustomTable :tableData="students" :headers="headers" />
+    <CustomTable
+      :tableData="students"
+      :headers="headers"
+      :loading="loading"
+      :viewItem="viewItem"
+    />
   </div>
 </template>
 
@@ -15,6 +20,7 @@ export default {
 
   data() {
     return {
+      loading: true,
       students: [],
       headers: [
         {
@@ -29,8 +35,17 @@ export default {
   created() {
     StudentService.GetAllStudents().then(students => {
       this.students = students;
-      console.log(this.students);
+      this.loading = false;
     });
+  },
+
+  methods: {
+    viewItem(item) {
+      this.$router.push({
+        name: "StudentProfile",
+        params: { studentId: item._id }
+      });
+    }
   }
 };
 </script>

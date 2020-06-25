@@ -9,12 +9,12 @@ route.post('/', async (req, res) => {
         .then(async task => {
             course.tasks.push(task);
             await course.save();
-            res.send({task, course});
+            res.send(task);
         })
 })
 
 route.get('/:id', (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
     Task.findById(id)
         .then(task => {
             res.send(task)

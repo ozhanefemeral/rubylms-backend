@@ -12,20 +12,37 @@
       ></v-text-field>
     </v-card-title>
     <v-data-table
-      :headers="headers"
+      :loading="loading"
+      :loading-text="loadingText"
+      :headers="headersWithActions"
       :items="tableData"
       :search="search"
-    ></v-data-table>
+    >
+      <template v-slot:item.actions="{ item }">
+        <v-icon class="mr-2" @click="viewItem(item)">
+          mdi-magnify
+        </v-icon>
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
 <script>
 export default {
-  props: ["headers", "tableData", "title"],
+  props: ["headers", "tableData", "title", "loading", "viewItem"],
   data() {
     return {
+      loadingText: "Loading... Please wait.",
       search: ""
     };
+  },
+  computed: {
+    headersWithActions() {
+      return [
+        ...this.headers,
+        { text: "Actions", value: "actions", sortable: false }
+      ];
+    }
   }
 };
 </script>

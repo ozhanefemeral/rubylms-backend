@@ -14,10 +14,6 @@ const studentSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Course'
     },
-    tasks: {
-        type: [Schema.Types.ObjectId],
-        ref: 'Task'
-    },
     solutions: {
         type: [Schema.Types.ObjectId],
         ref: 'Solution'

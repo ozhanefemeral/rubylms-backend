@@ -33,10 +33,25 @@ const routes = [
     name: 'Students',
     component: () => import('../views/Students.vue')
   },
+  {
+    path: '/course/:courseId',
+    name: 'CourseProfile',
+    component: () => import('../views/CourseProfile.vue')
+  },
+  {
+    path: '/teacher/:teacherId',
+    name: 'TeacherProfile',
+    component: () => import('../views/TeacherProfile.vue')
+  },
+  {
+    path: '/student/:studentId',
+    name: 'StudentProfile',
+    component: () => import('../views/StudentProfile.vue')
+  },
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })

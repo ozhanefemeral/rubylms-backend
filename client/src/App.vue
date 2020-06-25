@@ -59,11 +59,6 @@ export default {
         title: "Home"
       },
       {
-        to: "/courses",
-        icon: "mdi-book",
-        title: "Courses"
-      },
-      {
         to: "/teachers",
         icon: "mdi-account",
         title: "Teachers"
@@ -72,6 +67,11 @@ export default {
         to: "/students",
         icon: "mdi-school",
         title: "Students"
+      },
+      {
+        to: "/courses",
+        icon: "mdi-book",
+        title: "Courses"
       }
     ]
   }),
