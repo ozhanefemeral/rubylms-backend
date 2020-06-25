@@ -72,11 +72,6 @@ export default {
         to: "/students",
         icon: "mdi-school",
         title: "Students"
-      },
-      {
-        to: "/",
-        icon: "mdi-home",
-        title: "Home"
       }
     ]
   }),

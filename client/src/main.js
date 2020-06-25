@@ -6,6 +6,8 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
+store.commit('setSchool', '5ef45965a4ff2c4384375268')
+
 new Vue({
   router,
   store,

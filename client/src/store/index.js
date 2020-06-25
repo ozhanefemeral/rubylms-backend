@@ -5,8 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    school: ""
   },
   mutations: {
+    setSchool(state, value) {
+      state.school = value;
+    }
   },
   actions: {
   },

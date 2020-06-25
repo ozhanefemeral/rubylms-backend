@@ -6,6 +6,10 @@ const PORT = 3000 || process.env.PORT
 const mongoose = require('mongoose');
 const config = require('./config/keys');
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 mongoose.connect(config.mongoURI, { useUnifiedTopology: true, useNewUrlParser: true })
     .then(() => console.log("connected to mongoDB"));
 
