@@ -8,4 +8,9 @@ export default class CourseService {
         const res = await axios.get(`${config.schoolsUrl}/${store.state.school}/courses`);
         return res.data;
     }
+
+    static async GetCourse(id, populate = false) {
+        const res = await axios.get(`${config.coursesUrl}/${id}`, { params: { populate } });
+        return res.data;
+    }
 }
