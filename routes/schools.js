@@ -45,7 +45,7 @@ route.get('/:id/teachers', (req, res) => {
 })
 
 route.get('/:id/courses', (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     School.findById(id)
         .then(school => {

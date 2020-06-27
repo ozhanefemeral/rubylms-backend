@@ -9,6 +9,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setSchool(state, value) {
+      console.log(`New school value is: ${value}`);
       state.school = value;
     }
   },

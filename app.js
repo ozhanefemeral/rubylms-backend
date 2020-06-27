@@ -23,6 +23,7 @@ app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/courses', require('./routes/courses'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/solutions', require('./routes/solutions'));
+app.use('/api/test', require('./routes/test'));
 
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);

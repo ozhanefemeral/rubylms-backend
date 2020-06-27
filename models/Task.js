@@ -5,7 +5,6 @@ const taskSchema = new Schema({
     name: {
         type: String,
         required: true,
-        default: "Task"
     },
     solutions: {
         type: [Schema.Types.ObjectId],

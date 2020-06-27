@@ -72,6 +72,11 @@ export default {
         to: "/courses",
         icon: "mdi-book",
         title: "Courses"
+      },
+      {
+        to: "/test",
+        icon: "mdi-cogs",
+        title: "Test"
       }
     ]
   }),

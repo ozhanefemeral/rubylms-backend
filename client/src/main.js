@@ -3,10 +3,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
-
+import axios from "axios";
 Vue.config.productionTip = false
 
-store.commit('setSchool', "5ef66e3472b9a227d0ff15ab")
+axios.get('/api/test/school')
+  .then(res => res.data)
+  .then(school => {
+    store.commit('setSchool', school._id);
+  })
 
 new Vue({
   router,
