@@ -1,11 +1,13 @@
 <template>
   <div>
-    <h1>{{ course.name }} - {{ course.teachers[0] }}</h1>
+    <h1>{{ course.name }}</h1>
     <v-divider class="my-5"></v-divider>
-    <v-btn tile color="primary">Create Task</v-btn>
-    <v-btn tile color="secondary" class="ml-5">Other</v-btn>
+    <v-btn tile color="primary" @click="showCreateTask = true"
+      >Create Task</v-btn
+    >
+    <v-btn tile color="accent" class="ml-5">Other</v-btn>
     <v-divider class="mt-5"></v-divider>
-    <v-row class="ma-5">
+    <v-row>
       <v-col
         sm="12"
         md="6"
@@ -15,7 +17,7 @@
       >
         <v-card elevation="5" tile>
           <v-card-text>
-            <p class="text-center text-h3 black--text">{{ task.name }}</p>
+            <p class="text-center text-h3 primary--text">{{ task.name }}</p>
             <v-divider></v-divider>
             <v-list>
               <v-list-item>
@@ -23,7 +25,7 @@
                   <v-list-item-title>Responsibles</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  {{ task.solutions.length }}
+                  {{ task.responsibles.length }}
                 </v-list-item-action>
               </v-list-item>
               <v-list-item>
@@ -31,7 +33,7 @@
                   <v-list-item-title>Solutions</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  {{ task.responsibles.length }}
+                  {{ task.solutions.length }}
                 </v-list-item-action>
               </v-list-item>
               <v-list-item>
@@ -54,17 +56,29 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <CreateTask
+      v-model="showCreateTask"
+      :students="course.students"
+      :course="courseId"
+    />
   </div>
 </template>
 
 <script>
 import CourseService from "@/services/CourseService";
+import CreateTask from "@/components/CreateTask";
 export default {
+  components: {
+    CreateTask
+  },
+
   data() {
     return {
       courseId: "",
       course: {},
-      averages: []
+      averages: [],
+      showCreateTask: false
     };
   },
 
@@ -76,9 +90,8 @@ export default {
         let sum = 0;
         const length = task.solutions.length;
         for (let i = 0; i < length; i++) {
-          const sol = task.solutions[i];
+          const sol = task.solutions[i].mark;
           sum += sol;
-          console.log(sol);
         }
 
         const average = sum / length;

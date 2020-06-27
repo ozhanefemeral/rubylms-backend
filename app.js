@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-mongoose.connect(config.mongoURI, { useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect(config.mongoURI, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false })
     .then(() => console.log("connected to mongoDB"));
 
 app.use(cors());

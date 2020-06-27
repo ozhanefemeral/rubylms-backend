@@ -14,10 +14,6 @@ const studentSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Course'
     },
-    solutions: {
-        type: [Schema.Types.ObjectId],
-        ref: 'Solution'
-    }
 })
 
 const Student = mongoose.model('Student', studentSchema);

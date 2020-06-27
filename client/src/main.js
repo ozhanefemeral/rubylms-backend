@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false
 
-store.commit('setSchool', "5ef612ac6bc64f2eacd28844")
+store.commit('setSchool', "5ef66e3472b9a227d0ff15ab")
 
 new Vue({
   router,

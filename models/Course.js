@@ -10,9 +10,13 @@ const courseSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'School'
     },
-    teacher: {
+    teachers: {
         type: [Schema.Types.ObjectId],
         ref: 'Teacher'
+    },
+    students: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Student'
     },
     tasks: {
         type: [Schema.Types.ObjectId],

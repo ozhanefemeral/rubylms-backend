@@ -5,13 +5,9 @@ const Course = require('../models/Course');
 const Student = require('../models/Student');
 const Solution = require('../models/Solution');
 
-route.post('/', async (req, res) => {
-    const { studentId } = req.body;
-    const student = await Student.findById(studentId);
+route.post('/', (req, res) => {
     Solution.create(req.body)
-        .then(async solution => {
-            student.solutions.push(solution);
-            await student.save()
+        .then(solution => {
             res.send(solution);
         })
 })

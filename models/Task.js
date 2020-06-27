@@ -7,6 +7,10 @@ const taskSchema = new Schema({
         required: true,
         default: "Task"
     },
+    solutions: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Solution'
+    },
     responsibles: {
         type: [Schema.Types.ObjectId],
         ref: 'Student'

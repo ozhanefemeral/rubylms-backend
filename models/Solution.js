@@ -7,7 +7,7 @@ const solutionSchema = new Schema({
         default: ["a"]
     },
     task: {
-        type: [Schema.Types.ObjectId],
+        type: Schema.Types.ObjectId,
         ref: 'Task'
     },
     duration: {
@@ -24,11 +24,16 @@ const solutionSchema = new Schema({
         min: 0,
         max: 100,
         default: 0
+    },
+    student: {
+        type: Schema.Types.ObjectId,
+        ref: 'Student'
     }
 })
 
 solutionSchema.pre('save', async function (next) {
     const task = await mongoose.model('Task').findById(this.task);
+
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {
         const crntQuestion = task.questions[index];
@@ -37,6 +42,8 @@ solutionSchema.pre('save', async function (next) {
         }
     }
     this.mark = mark;
+    task.solutions.push(this)
+    await task.save()
     next();
 })
 
