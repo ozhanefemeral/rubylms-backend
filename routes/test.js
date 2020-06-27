@@ -87,6 +87,19 @@ async function enrollStudents(students, course, savePromises) {
     savePromises.push(course.save());
 }
 
+route.post('/task', async (req, res) => {
+    let promises = [];
+    const { course, responsibles } = req.body;
+    const courseDoc = await Course.findById(course);
+    const task = await createTask(courseDoc, responsibles, promises);
+    await createSolutions(responsibles, task, promises);
+
+    Promise.all(promises)
+        .then(() => {
+            res.send(task)
+        })
+})
+
 async function createTask(course, students, savePromises) {
     const taskBody = generateTask();
     const task = await Task.create({
