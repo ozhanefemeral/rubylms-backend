@@ -25,6 +25,8 @@ app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/solutions', require('./routes/solutions'));
 app.use('/api/test', require('./routes/test'));
 
+app.use(express.static(__dirname + '/public/'));
+
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`);
 });

@@ -24,8 +24,6 @@ route.post('/:id', async (req, res) => {
     const { id } = req.params;
     const { students } = req.body;
 
-    console.log(students);
-
     Course.findById(id)
         .then(async course => {
             let studentsMerged = course.students.concat(students);
@@ -62,6 +60,7 @@ route.get('/:id', (req, res) => {
         Course.findById(id)
             .populate(populateObject)
             .populate({ path: 'students', model: 'Student', select: ['_id', 'name'] })
+            .populate({ path: 'teachers', model: 'Teacher', select: ['_id', 'name'] })
             .then(course => {
                 res.send(course)
             })

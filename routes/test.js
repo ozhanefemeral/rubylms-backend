@@ -128,13 +128,23 @@ function generateTask() {
     let questions = []
     let name = "Example Task"
 
-    for (let i = 0; i < 5; i++) {
-        questions.push({
-            text: `Question ${i}`,
-            answer: "a",
-            choices: ["a", "b", "c", "d"],
-            points: 20
-        })
+    for (let i = 0; i < 10; i++) {
+        if (i < 5) {
+            questions.push({
+                text: `Question ${i}`,
+                answer: 0,
+                answerType: "Test",
+                choices: ["Choice A", "Choice B", "Choice C", "Choice D"],
+                points: 10
+            })
+        } else {
+            questions.push({
+                text: `Question ${i}`,
+                answer: "Text",
+                answerType: "Classical",
+                points: 10
+            })
+        }
     }
 
     const task = {
@@ -149,13 +159,14 @@ function generateAnswers(task) {
     let answers = [];
     for (let i = 0; i < task.questions.length; i++) {
         const q = task.questions[i];
-
         let rnd = Math.random();
-
-        if (rnd > 0.25) {
+        
+        if (rnd > 0.15) {
             answers.push(q.answer)
+        } else if (q.answerType === 'Test') {
+            answers.push(1);
         } else {
-            answers.push("B");
+            answers.push('WRONG TEXT')
         }
     }
 

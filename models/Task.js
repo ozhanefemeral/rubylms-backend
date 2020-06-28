@@ -26,10 +26,6 @@ const taskSchema = new Schema({
     document: {
         type: String
     },
-    lockAfterAnswering: {
-        type: Boolean,
-        default: true
-    },
     expirationDate: Date
 })
 

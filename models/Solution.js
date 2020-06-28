@@ -28,6 +28,10 @@ const solutionSchema = new Schema({
     student: {
         type: Schema.Types.ObjectId,
         ref: 'Student'
+    },
+    solvedAt: {
+        type: Date,
+        default: Date.now()
     }
 })
 
@@ -37,7 +41,7 @@ solutionSchema.pre('save', async function (next) {
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {
         const crntQuestion = task.questions[index];
-        if (crntQuestion.answer === this.answers[index]) {
+        if (crntQuestion.answer == this.answers[index]) {
             mark += crntQuestion.points;
         }
     }
