@@ -49,6 +49,11 @@ const routes = [
     component: () => import('../views/StudentProfile.vue')
   },
   {
+    path: '/task/:taskId',
+    name: 'TaskDetails',
+    component: () => import('../views/TaskDetails.vue'),
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import('../views/Test.vue')

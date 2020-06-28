@@ -1,13 +1,15 @@
 <template>
   <div>
-    <h1>{{ course.name }}</h1>
+    <h1 v-if="course != undefined">
+      {{ course.name }} - {{ course.teachers[0].name }} - {{ courseAverage }}
+    </h1>
     <v-divider class="my-5"></v-divider>
     <v-btn tile color="primary" @click="showCreateTask = true"
       >Create Task</v-btn
     >
     <v-btn tile color="accent" class="ml-5">Other</v-btn>
     <v-divider class="mt-5"></v-divider>
-    <v-row>
+    <v-row v-if="course != undefined">
       <v-col
         sm="12"
         md="6"
@@ -41,14 +43,14 @@
                   <v-list-item-title>Average</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  {{ averages[index] }}
+                  {{ averages[index].toFixed(2) }}
                 </v-list-item-action>
               </v-list-item>
             </v-list>
             <v-divider></v-divider>
           </v-card-text>
           <v-card-actions>
-            <v-btn tile color="primary">
+            <v-btn tile color="primary" @click="goTaskDetails(task)">
               <v-icon>mdi-magnify</v-icon>
               View Details
             </v-btn>
@@ -58,6 +60,7 @@
     </v-row>
 
     <CreateTask
+      v-if="course != undefined"
       v-model="showCreateTask"
       :students="course.students"
       :course="courseId"
@@ -76,7 +79,7 @@ export default {
   data() {
     return {
       courseId: "",
-      course: {},
+      course: undefined,
       averages: [],
       showCreateTask: false
     };
@@ -95,9 +98,28 @@ export default {
         }
 
         const average = sum / length;
-        this.averages.push(average.toFixed(2));
+        this.averages.push(average);
       });
     });
+  },
+
+  computed: {
+    courseAverage() {
+      let sum = 0;
+      this.averages.forEach(el => {
+        sum += parseFloat(el);
+      });
+      return (sum / this.averages.length).toFixed(2);
+    }
+  },
+
+  methods: {
+    goTaskDetails(task) {
+      this.$router.push({
+        name: "TaskDetails",
+        params: { taskId: task._id }
+      });
+    }
   }
 };
 </script>

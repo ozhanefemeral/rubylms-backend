@@ -84,7 +84,7 @@
       </v-card-text>
       <v-card-actions>
         <v-btn color="success" tile @click="createTask">Save</v-btn>
-        <v-btn color="warning" tile @click.stop="show = false">Cancel</v-btn>
+        <v-btn color="warning" tile @click.stop="cancel">Cancel</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -94,6 +94,7 @@
 import TaskService from "../services/TaskService";
 export default {
   props: ["value", "students", "course"],
+
   data() {
     return {
       e1: 1,
@@ -160,6 +161,17 @@ export default {
         console.log(task);
         this.value = false;
       });
+    },
+
+    cancel() {
+      this.e1 = 1;
+      this.date = "";
+      this.time = "";
+      this.document = undefined;
+      this.questions = [];
+      this.special = false;
+      this.selectedStudents = [];
+      this.show = false;
     }
   }
 };

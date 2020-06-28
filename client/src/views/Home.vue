@@ -1,11 +1,9 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-  </div>
+  <v-row align="center" justify="center">
+    <img width="128" src="../assets/diamond.png" />
+  </v-row>
 </template>
 
 <script>
-export default {
-  name: "Home"
-};
+export default {};
 </script>

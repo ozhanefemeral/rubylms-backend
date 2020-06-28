@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Students</h1>
+    <h1>Courses</h1>
     <CustomTable
       :tableData="courses"
       :headers="headers"
@@ -27,6 +27,11 @@ export default {
           text: "Name",
           align: "start",
           value: "name"
+        },
+        {
+          text: "Teacher",
+          align: "start",
+          value: "teachers"
         }
       ]
     };
@@ -34,6 +39,9 @@ export default {
 
   created() {
     CourseService.GetAllCourses().then(courses => {
+      courses.forEach(element => {
+        element.teachers = element.teachers.map(t => t.name + " ");
+      });
       this.courses = courses;
       this.loading = false;
     });
