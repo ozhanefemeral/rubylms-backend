@@ -46,17 +46,28 @@ async function createSchool() {
 async function createTeacher(school) {
     return Teacher.create({
         school,
-        name: faker.name.findName()
+        name: "Özhan Efe Meral",
+        phone: "05375602191",
+        password: "efemeral1"
     })
 }
 
 async function createStudents(school) {
     let studentPromises = [];
 
-    for (let i = 0; i < STUDENT_COUNT; i++) {
+    studentPromises.push(Student.create({
+        school,
+        name: "Mesut Gedik",
+        phone: "123",
+        password: "123"
+    }));
+
+    for (let i = 0; i < STUDENT_COUNT - 1; i++) {
         studentPromises.push(Student.create({
             school,
             name: faker.name.findName(),
+            phone: faker.phone.phoneNumber(),
+            password: faker.internet.password
         }));
     }
 
@@ -160,7 +171,7 @@ function generateAnswers(task) {
     for (let i = 0; i < task.questions.length; i++) {
         const q = task.questions[i];
         let rnd = Math.random();
-        
+
         if (rnd > 0.15) {
             answers.push(q.answer)
         } else if (q.answerType === 'Test') {
