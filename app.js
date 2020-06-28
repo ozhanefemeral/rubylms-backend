@@ -2,9 +2,10 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const PORT = 3000 || process.env.PORT
 const mongoose = require('mongoose');
 const config = require('./config/keys');
+
+const PORT = process.env.PORT || 3000
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
