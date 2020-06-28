@@ -7,8 +7,8 @@ const Student = require('../models/Student')
 const Teacher = require('../models/Teacher')
 
 route.post('/login/student', (req, res) => {
-    const { phoneNumber, password } = req.body;
-    Student.find({ phoneNumber })
+    const { phone, password } = req.body;
+    Student.findOne({ phone })
         .then(student => {
             bcrypt.compare(password, student.password, (err, same) => {
                 if (same) {
@@ -18,7 +18,7 @@ route.post('/login/student', (req, res) => {
                         });
                     });
                 } else {
-                    res.send(400);
+                    res.sendStatus(400);
                 }
             });
 
