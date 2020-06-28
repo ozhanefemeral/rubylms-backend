@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function (req, res, next) {
+module.exports = (req, res, next) => {
     const bearerHeader = req.headers['authorization'];
 
     if (typeof bearerHeader !== 'undefined') {
@@ -11,8 +11,11 @@ module.exports = function (req, res, next) {
             if (err) {
                 res.sendStatus(403);
             } else {
+                req.authData = authData;
                 next();
             }
         });
+    } else {
+        res.sendStatus(403);
     }
 }

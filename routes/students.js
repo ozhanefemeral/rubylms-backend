@@ -3,6 +3,8 @@ const route = express.Router();
 const Student = require('../models/Student');
 const Course = require('../models/Course');
 
+const verifyToken = require('../middlewares/verifyToken')
+
 route.post('/', (req, res) => {
     Student.create(req.body)
         .then(student => {
@@ -22,7 +24,7 @@ route.post('/:studentId/enroll/:courseId', async (req, res) => {
         })
 })
 
-route.get('/:studentId', (req, res) => {
+route.get('/:studentId', verifyToken, (req, res) => {
     const { studentId } = req.params
     Student.findById(studentId)
         .then(student => {

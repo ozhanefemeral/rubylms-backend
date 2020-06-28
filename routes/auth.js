@@ -10,12 +10,12 @@ route.post('/login/student', (req, res) => {
     const { phone, password } = req.body;
     Student.findOne({ phone })
         .then(student => {
+            console.log(student);
+
             bcrypt.compare(password, student.password, (err, same) => {
                 if (same) {
                     jwt.sign({ _id: student._id }, '5489d9845m', (err, token) => {
-                        res.json({
-                            token
-                        });
+                        res.json([token, student]);
                     });
                 } else {
                     res.sendStatus(400);
