@@ -74,6 +74,11 @@ export default {
         title: "Courses"
       },
       {
+        to: "/login",
+        icon: "mdi-login",
+        title: "Login"
+      },
+      {
         to: "/test",
         icon: "mdi-cogs",
         title: "Test"
