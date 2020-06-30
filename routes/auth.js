@@ -14,7 +14,10 @@ route.post('/login/student', (req, res) => {
 
             bcrypt.compare(password, student.password, (err, same) => {
                 if (same) {
-                    jwt.sign({ _id: student._id }, '5489d9845m', (err, token) => {
+                    const token = {
+                        id: student._id
+                    }
+                    jwt.sign(token, '5489d9845m', (err, token) => {
                         res.json({ token, studentId: student._id });
                     });
                 } else {
@@ -32,10 +35,12 @@ route.post('/login/teacher', (req, res) => {
         .then(teacher => {
             bcrypt.compare(password, teacher.password, (err, same) => {
                 if (same) {
-                    jwt.sign({ token, teacherId: teacher._id }, '5489d9845m', (err, token) => {
-                        res.json({
-                            token
-                        });
+                    const token = {
+                        id: teacher._id
+                    };
+
+                    jwt.sign(token, '5489d9845m', (err, token) => {
+                        res.json(token);
                     });
                 } else {
                     res.sendStatus(400);

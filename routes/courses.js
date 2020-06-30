@@ -6,8 +6,9 @@ const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
 
 const upload = require('../middlewares/upload');
+const verifyToken = require('../middlewares/verifyToken');
 
-route.post('/', async (req, res) => {
+route.post('/', verifyToken, async (req, res) => {
     //TODO 
     // ADD COURSE TO ALL TEACHERS DOCUMENT
 
@@ -20,7 +21,7 @@ route.post('/', async (req, res) => {
         })
 })
 
-route.post('/:id', async (req, res) => {
+route.post('/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { students } = req.body;
 
@@ -41,7 +42,7 @@ route.post('/:id', async (req, res) => {
         })
 })
 
-route.get('/:id', (req, res) => {
+route.get('/:id', verifyToken, (req, res) => {
     const { id } = req.params
     const { populate } = req.query;
 
@@ -74,7 +75,7 @@ route.get('/:id', (req, res) => {
 
 })
 
-route.post('/:id/upload', upload.single('document'), (req, res) => {
+route.post('/:id/upload', [verifyToken, upload.single('document')], (req, res) => {
     const { id } = req.params;
     Course.findById(id)
         .then(course => {

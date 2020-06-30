@@ -5,14 +5,14 @@ const Course = require('../models/Course');
 
 const verifyToken = require('../middlewares/verifyToken')
 
-route.post('/', (req, res) => {
+route.post('/', verifyToken,(req, res) => {
     Student.create(req.body)
         .then(student => {
             res.status(201).send(student)
         })
 })
 
-route.post('/:studentId/enroll/:courseId', async (req, res) => {
+route.post('/:studentId/enroll/:courseId', verifyToken,async (req, res) => {
     const { studentId, courseId } = req.params;
     Student.findById(studentId)
         .then(student => {
