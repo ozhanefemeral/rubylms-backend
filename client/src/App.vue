@@ -2,7 +2,16 @@
   <v-app>
     <v-navigation-drawer v-model="drawer" app>
       <v-list dense>
+        <v-list-item link to="/login" v-if="token == ''">
+          <v-list-item-action>
+            <v-icon> mdi-login</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item
+          v-else
           link
           v-for="(item, index) in navLinks"
           :key="index"
@@ -28,7 +37,9 @@
       </div>
 
       <div class="pa-2">
-        <v-btn block color="red" tile dark>Logout</v-btn>
+        <v-btn block color="red" tile dark @click="logout" v-if="token != ''">
+          Logout
+        </v-btn>
       </div>
     </v-navigation-drawer>
 
@@ -74,17 +85,18 @@ export default {
         title: "Courses"
       },
       {
-        to: "/login",
-        icon: "mdi-login",
-        title: "Login"
-      },
-      {
         to: "/test",
         icon: "mdi-cogs",
         title: "Test"
       }
     ]
   }),
+  methods: {
+    logout() {
+      this.$store.commit("setToken", "");
+      this.$router.push("Login");
+    }
+  },
   computed: {
     darkMode: {
       get() {
@@ -94,6 +106,9 @@ export default {
         this.$vuetify.theme.dark = val;
         return val;
       }
+    },
+    token() {
+      return this.$store.state.token;
     }
   }
 };

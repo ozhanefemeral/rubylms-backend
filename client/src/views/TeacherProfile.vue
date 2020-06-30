@@ -5,17 +5,22 @@
         {{ this.teacher.name }}
       </v-card-title>
     </v-card>
-    <v-expansion-panels multiple>
-      <v-expansion-panel v-for="(item, index) in teacher.courses" :key="index">
-        <v-expansion-panel-header>{{ item.name }}</v-expansion-panel-header>
-        <v-expansion-panel-content>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <v-row>
+      <v-col sm="12" md="6" lg="3" v-for="(c, i) in teacher.courses" :key="i">
+        <v-card elevation="5">
+          <v-card-title>
+            {{ c.name }}
+          </v-card-title>
+          <details>
+            <summary>
+              Details
+              <v-icon></v-icon>
+            </summary>
+            <v-card-text> {{ c._id }} </v-card-text>
+          </details>
+        </v-card>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

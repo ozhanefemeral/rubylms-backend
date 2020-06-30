@@ -35,8 +35,9 @@ export default {
           password: this.password
         })
         .then(res => res.data)
-        .then(resp => {
-          console.log(resp);
+        .then(token => {
+          this.$store.commit("setToken", token);
+          this.$router.push("Home");
         });
     }
   }

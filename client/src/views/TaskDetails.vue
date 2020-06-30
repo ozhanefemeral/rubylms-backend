@@ -37,7 +37,7 @@
                 {{ sol.solvedAt.substr(12, 7) }}
               </v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="viewSolution(sol)">
+                <v-btn tile color="primary" @click="viewSolution(sol)">
                   <v-icon>mdi-magnify</v-icon>
                   View
                 </v-btn>

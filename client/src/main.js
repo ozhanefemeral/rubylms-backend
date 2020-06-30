@@ -12,6 +12,15 @@ axios.get('/api/test/school')
     store.commit('setSchool', school._id);
   })
 
+  const token = localStorage.getItem('token')
+
+if (token.length > 0) {
+  store.commit('setToken', token);
+  router.push('Home');
+} else {
+  router.push('Login');
+}
+
 new Vue({
   router,
   store,
