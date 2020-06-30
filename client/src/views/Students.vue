@@ -5,7 +5,7 @@
       :tableData="students"
       :headers="headers"
       :loading="loading"
-      :viewItem="viewItem"
+      :viewItem="goStudentProfile"
     />
   </div>
 </template>
@@ -40,10 +40,10 @@ export default {
   },
 
   methods: {
-    viewItem(item) {
+    goStudentProfile(student) {
       this.$router.push({
         name: "StudentProfile",
-        params: { studentId: item._id }
+        params: { studentId: student._id }
       });
     }
   }

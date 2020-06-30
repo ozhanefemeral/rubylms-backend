@@ -5,15 +5,21 @@
 </template>
 
 <script>
+import StudentService from "../services/StudentService";
 export default {
   data() {
     return {
-      studentId: ""
+      studentId: "",
+      student: null
     };
   },
 
   created() {
     this.studentId = this.$route.params.studentId;
+    StudentService.GetStudent(this.studentId).then(student => {
+      this.student = student;
+      console.log(student);
+    });
   }
 };
 </script>

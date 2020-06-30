@@ -7,8 +7,23 @@
     <v-btn tile color="primary" @click="showCreateTask = true"
       >Create Task</v-btn
     >
-    <v-btn tile color="accent" class="ml-5">Other</v-btn>
+    <v-btn tile color="accent" class="ml-5" @click="showStudents = true"
+      >View Students</v-btn
+    >
     <v-divider class="mt-5"></v-divider>
+
+    <v-dialog v-model="showStudents" width="500">
+      <span v-if="course">
+        <CustomTable
+          :tableData="course.students"
+          :headers="headers"
+          :loading="loading"
+          :viewItem="goStudentProfile"
+        />
+      </span>
+    </v-dialog>
+
+    <v-divider></v-divider>
     <v-row v-if="course != undefined">
       <v-col
         sm="12"
@@ -69,26 +84,55 @@
 </template>
 
 <script>
-import CourseService from "@/services/CourseService";
+import CourseService from "../services/CourseService";
 import CreateTask from "@/components/CreateTask";
+import CustomTable from "@/components/CustomTable";
+
 export default {
   components: {
-    CreateTask
+    CreateTask,
+    CustomTable
   },
 
   data() {
     return {
+      loading: true,
       courseId: "",
       course: undefined,
       averages: [],
-      showCreateTask: false
+      showCreateTask: false,
+      headers: [
+        {
+          text: "Name",
+          align: "start",
+          value: "name"
+        },
+        {
+          text: "Average",
+          value: "average"
+        }
+      ],
+      showStudents: false
     };
   },
 
   created() {
     this.courseId = this.$route.params.courseId;
-    CourseService.GetCourse(this.courseId, true).then(course => {
-      this.course = course;
+    const populateBody = [
+      {
+        path: "tasks",
+        model: "Task",
+        select: ["_id", "name", "responsibles", "solutions"],
+        populate: {
+          path: "solutions",
+          model: "Solution",
+          select: ["mark", "student"]
+        }
+      },
+      { path: "students", model: "Student", select: ["_id", "name"] },
+      { path: "teachers", model: "Teacher", select: ["_id", "name"] }
+    ];
+    CourseService.GetCourse(this.courseId, populateBody).then(course => {
       course.tasks.forEach(task => {
         let sum = 0;
         const length = task.solutions.length;
@@ -100,6 +144,25 @@ export default {
         const average = sum / length;
         this.averages.push(average);
       });
+        this.loading = false;
+
+      for (let i = 0; i < course.students.length; i++) {
+        let student = course.students[i];
+        let sum = 0;
+        let solutions = [];
+
+        course.tasks.forEach(c => {
+          solutions.push(...c.solutions.filter(c => c.student === student._id));
+        });
+
+        solutions.forEach(s => {
+          sum += s.mark;
+        });
+
+        course.students[i].average = (sum / solutions.length).toFixed(2);
+      }
+  
+      this.course = course;
     });
   },
 
@@ -118,6 +181,13 @@ export default {
       this.$router.push({
         name: "TaskDetails",
         params: { taskId: task._id }
+      });
+    },
+
+    goStudentProfile(student) {
+      this.$router.push({
+        name: "StudentProfile",
+        params: { studentId: student._id }
       });
     }
   }

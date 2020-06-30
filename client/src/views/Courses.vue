@@ -13,6 +13,7 @@
 <script>
 import CourseService from "../services/CourseService";
 import CustomTable from "@/components/CustomTable";
+
 export default {
   components: {
     CustomTable
