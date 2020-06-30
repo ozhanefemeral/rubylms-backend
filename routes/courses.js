@@ -1,4 +1,5 @@
 const express = require('express');
+const qs = require('qs');
 const route = express.Router();
 
 const Course = require('../models/Course');
@@ -46,22 +47,19 @@ route.get('/:id', verifyToken, (req, res) => {
     const { id } = req.params
     const { populate } = req.query;
 
-    if (populate) {
-        const populateObject = {
-            path: 'tasks',
-            model: 'Task',
-            select: ['_id', 'name', 'responsibles', 'solutions'],
-            populate: {
-                path: 'solutions',
-                model: 'Solution',
-                select: ['mark'],
-            }
-        };
+    const popObject = qs.parse(populate);
+    let popArray = [];
 
+    for (const key in popObject) {
+        if (popObject.hasOwnProperty(key)) {
+            const element = popObject[key];
+            popArray.push(element)
+        }
+    }
+
+    if (populate) {
         Course.findById(id)
-            .populate(populateObject)
-            .populate({ path: 'students', model: 'Student', select: ['_id', 'name'] })
-            .populate({ path: 'teachers', model: 'Teacher', select: ['_id', 'name'] })
+            .populate(popArray)
             .then(course => {
                 res.send(course)
             })
@@ -71,8 +69,6 @@ route.get('/:id', verifyToken, (req, res) => {
                 res.send(course)
             })
     }
-
-
 })
 
 route.post('/:id/upload', [verifyToken, upload.single('document')], (req, res) => {

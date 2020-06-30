@@ -2,6 +2,7 @@ const express = require('express');
 const route = express.Router();
 const mongoose = require('mongoose');
 const faker = require('faker/locale/en_GB');
+const fs = require('fs')
 
 const School = require('../models/School');
 const Student = require('../models/Student');
@@ -10,28 +11,53 @@ const Task = require('../models/Task');
 const Course = require('../models/Course');
 const Solution = require('../models/Solution');
 
+const COURSE_NAMES = [
+    "English,", "German", "French",
+    "Russian", "Spanish", "Chinese",
+    "Turkish", "Agriculture", "Literature",
+    "Sociology", "Logic", "Mathematics",
+    "Psychology", "Biology", "Public Speaking",
+    "Linguistics", "Geography", "Programming"
+]
+
 const STUDENT_COUNT = 10;
+const TEACHER_COUNT = 10;
+const TASK_COUNT = 10;
 
 route.delete('/restart', async (req, res) => {
     let savePromises = [];
 
     await dropDB();
     const school = await createSchool();
-    const teacher = await createTeacher(school);
+    const teachers = await createTeachers(school);
     const students = await createStudents(school);
-    const course = await createCourse(school, teacher, savePromises);
-    await enrollStudents(students, course, savePromises);
-    const task = await createTask(course, students, savePromises);
-    await createSolutions(students, task, savePromises)
+    const courses = await createCourses(school, teachers, savePromises);
+    await enrollStudents(students, courses, savePromises);
+    const tasks = await createTasks(courses, students, savePromises);
+    await createSolutions(tasks, savePromises)
 
     Promise.all(savePromises)
-        .then(res.send({ school, teacher, students, course }))
+        .then(res.send({ school, teachers, students, courses }))
 })
 
 route.get('/school/', (req, res) => {
     School.find({})
         .then(schools => res.send(schools[0]))
 });
+
+route.post('/task', async (req, res) => {
+    let promises = [];
+    const { course, responsibles } = req.body;
+
+    const courseDoc = await Course.findById(course);
+    const tasks = await createTasks([courseDoc], responsibles, promises);
+    await createSolutions(tasks, promises);
+
+    Promise.all(promises)
+        .then(() => {
+            res.send(tasks)
+        })
+})
 
 async function dropDB() {
     return mongoose.connection.db.dropDatabase()
@@ -43,13 +69,30 @@ async function createSchool() {
     });
 }
 
-async function createTeacher(school) {
-    return Teacher.create({
-        school,
-        name: "Özhan Efe Meral",
-        phone: "05375602191",
-        password: "efemeral1"
-    })
+async function createTeachers(school) {
+    let teacherPromises = [];
+
+    teacherPromises.push(
+        Teacher.create({
+            school,
+            name: "Özhan Efe Meral",
+            phone: "05375602191",
+            password: "efemeral1"
+        })
+    )
+
+    for (let i = 0; i < TEACHER_COUNT - 1; i++) {
+        teacherPromises.push(
+            Teacher.create({
+                school,
+                name: faker.name.findName(),
+                phone: faker.phone.phoneNumber(),
+                password: faker.random.word()
+            })
+        )
+    }
+
+    return await Promise.all(teacherPromises);
 }
 
 async function createStudents(school) {
@@ -74,65 +117,82 @@ async function createStudents(school) {
     return await Promise.all(studentPromises);
 }
 
-async function createCourse(school, teacher, savePromises) {
+async function createCourses(school, teachers, savePromises) {
+    let coursePromises = [];
 
-    const course = await Course.create({
-        school,
-        teachers: [teacher],
-        name: 'Example Course'
-    })
-
-    teacher.courses.push(course);
-    savePromises.push(teacher.save());
-    return course;
-}
-
-async function enrollStudents(students, course, savePromises) {
-
-    students.forEach(element => {
-        element.courses.push(course);
-        savePromises.push(element.save())
-    });
-
-    course.students = students;
-    savePromises.push(course.save());
-}
-
-route.post('/task', async (req, res) => {
-    let promises = [];
-    const { course, responsibles } = req.body;
-    const courseDoc = await Course.findById(course);
-    const task = await createTask(courseDoc, responsibles, promises);
-    await createSolutions(responsibles, task, promises);
-
-    Promise.all(promises)
-        .then(() => {
-            res.send(task)
-        })
-})
-
-async function createTask(course, students, savePromises) {
-    const taskBody = generateTask();
-    const task = await Task.create({
-        ...taskBody,
-        course,
-        responsibles: students
-    })
-
-    course.tasks.push(task);
-    savePromises.push(course.save())
-
-    return task;
-}
-
-async function createSolutions(students, task, savePromises) {
-    students.forEach(student => {
-        savePromises.push(Solution.create({
-            student,
-            task,
-            answers: generateAnswers(task)
+    for (let i = 0; i < TEACHER_COUNT; i++) {
+        const rnd = Math.floor(Math.random() * COURSE_NAMES.length);
+        coursePromises.push(Course.create({
+            school,
+            teachers: [teachers[i]],
+            name: COURSE_NAMES[rnd]
         }))
+    }
+
+    const courses = await Promise.all(coursePromises);
+
+    for (let i = 0; i < courses.length; i++) {
+        teachers[i].courses.push(courses[i]);
+        savePromises.push(teachers[i].save());
+    }
+
+    return courses;
+}
+
+async function enrollStudents(students, courses, savePromises) {
+    students.forEach(s => {
+        s.courses.push(...courses);
+        savePromises.push(s.save())
     });
+
+    courses.forEach(c => {
+        c.students = students;
+        savePromises.push(c.save())
+    });
+
+    await Promise.all(savePromises);
+}
+
+async function createTasks(courses, students, savePromises) {
+    let allTasks = [];
+
+    for (let i = 0; i < courses.length; i++) {
+        const course = courses[i];
+        let taskPromises = [];
+
+        for (let j = 0; j < TASK_COUNT; j++) {
+            const taskBody = generateTask();
+            taskPromises.push(Task.create({
+                ...taskBody,
+                course,
+                responsibles: students
+            }))
+        }
+
+        const tasks = await Promise.all(taskPromises)
+
+
+        allTasks.push(...tasks);
+        course.tasks.push(...tasks);
+        savePromises.push(course.save());
+    }
+
+    return allTasks;
+}
+
+async function createSolutions(tasks, savePromises) {
+    for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
+        task.responsibles.forEach(student => {
+            savePromises.push(
+                Solution.create({
+                    student,
+                    task,
+                    answers: generateAnswers(tasks[i])
+                })
+            )
+        })
+    }
 }
 
 function generateTask() {

@@ -50,7 +50,7 @@ route.get('/:id/courses', (req, res) => {
     School.findById(id)
         .then(school => {
             return Course.find({ school: school._id })
-                .select(['name', '_id', "teachers"])
+                .select(['name', '_id', "teachers", 'students'])
                 .populate({ path: 'teachers', model: 'Teacher', select: ['name'] })
         })
         .then(courses => {

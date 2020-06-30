@@ -45,6 +45,7 @@ solutionSchema.pre('save', async function (next) {
             mark += crntQuestion.points;
         }
     }
+
     this.mark = mark;
     task.solutions.push(this)
     await task.save()
