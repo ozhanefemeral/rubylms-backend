@@ -26,6 +26,10 @@ const taskSchema = new Schema({
     document: {
         type: String
     },
+    course: {
+        type: Schema.Types.ObjectId,
+        ref: 'Course'
+    },
     expirationDate: Date
 })
 

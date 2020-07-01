@@ -6,6 +6,8 @@ const Student = require('../models/Student');
 const Solution = require('../models/Solution');
 const verifyToken = require('../middlewares/verifyToken');
 
+const qs = require('qs');
+
 route.post('/', verifyToken, (req, res) => {
     Solution.create(req.body)
         .then(solution => {
@@ -13,9 +15,13 @@ route.post('/', verifyToken, (req, res) => {
         })
 })
 
-route.get('/', verifyToken, (req, res) => {
-    const { taskId } = req.query
-    Solution.find({ task: taskId })
+route.get('/find', verifyToken, (req, res) => {
+    const { query } = req.query;
+    const queryObj = qs.parse(query);
+    
+    console.log(queryObj);
+
+    Solution.find(queryObj)
         .then(solutions => {
             res.send(solutions)
         })

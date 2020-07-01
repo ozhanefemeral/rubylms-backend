@@ -10,8 +10,9 @@ export default class StudentService {
     }
 
     static async GetStudent(id, populate = null) {
-        let populateString = qs.stringify(populate);
-        const res = await axios.get(`${config.studentsUrl}/${id}`, { params: { populate: populateString } });
+        populate = qs.stringify(populate);
+        console.log(populate);
+        const res = await axios.get(`${config.studentsUrl}/${id}`, { params: { populate } });
         return res.data;
     }
 }
