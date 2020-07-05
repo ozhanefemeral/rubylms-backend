@@ -7,9 +7,14 @@
     <v-btn tile color="primary" @click="showCreateTask = true"
       >Create Task</v-btn
     >
-    <v-btn tile color="accent" class="ml-5" @click="showStudents = true"
-      >View Students</v-btn
-    >
+    <v-btn tile color="accent" class="ml-5" @click="showStudents = true">
+      View Students
+    </v-btn>
+
+    <v-btn tile color="accent" class="ml-5" @click="showStudents = true">
+      Enroll Students
+    </v-btn>
+
     <v-divider class="mt-5"></v-divider>
 
     <v-dialog v-model="showStudents" width="500">
@@ -22,6 +27,10 @@
         />
       </span>
     </v-dialog>
+
+    <CustomDialog v-model="showAllStudents"> 
+      <h1>Allah</h1>
+    </CustomDialog>
 
     <v-divider></v-divider>
     <v-row v-if="course != undefined">
@@ -87,11 +96,13 @@
 import CourseService from "../services/CourseService";
 import CreateTask from "@/components/CreateTask";
 import CustomTable from "@/components/CustomTable";
+import CustomDialog from "@/components/CustomDialog";
 
 export default {
   components: {
     CreateTask,
-    CustomTable
+    CustomTable,
+    CustomDialog
   },
 
   data() {
@@ -101,6 +112,7 @@ export default {
       course: undefined,
       averages: [],
       showCreateTask: false,
+      showAllStudents: false,
       headers: [
         {
           text: "Name",
@@ -144,7 +156,7 @@ export default {
         const average = sum / length;
         this.averages.push(average);
       });
-        this.loading = false;
+      this.loading = false;
 
       for (let i = 0; i < course.students.length; i++) {
         let student = course.students[i];
@@ -161,7 +173,7 @@ export default {
 
         course.students[i].average = (sum / solutions.length).toFixed(2);
       }
-  
+
       this.course = course;
     });
   },

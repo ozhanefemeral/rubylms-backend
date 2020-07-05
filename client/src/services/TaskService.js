@@ -21,7 +21,7 @@ export default class TaskService {
 
     static async FindSolutions(studentId, select = undefined, populate = undefined) {
         populate = qs.stringify(populate);
-        select = qs.stringify(select);
+        // select = qs.stringify(select);
         const res = await axios.get(`${config.studentsUrl}/${studentId}/solutions`, { params: { select, populate } })
         return res.data;
     }

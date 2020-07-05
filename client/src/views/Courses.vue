@@ -1,22 +1,30 @@
 <template>
   <div>
     <h1>Courses</h1>
+    <v-btn color="accent" @click="showCreateCourse = true">Create Course</v-btn>
+
+    <v-divider class="my-5"></v-divider>
+
     <CustomTable
       :tableData="courses"
       :headers="headers"
       :loading="loading"
       :viewItem="viewItem"
     />
+
+    <CreateCourse v-model="showCreateCourse" />
   </div>
 </template>
 
 <script>
 import CourseService from "../services/CourseService";
 import CustomTable from "@/components/CustomTable";
+import CreateCourse from "@/components/CreateCourse";
 
 export default {
   components: {
-    CustomTable
+    CustomTable,
+    CreateCourse
   },
 
   data() {
@@ -34,7 +42,8 @@ export default {
           align: "start",
           value: "teachers"
         }
-      ]
+      ],
+      showCreateCourse: false
     };
   },
 

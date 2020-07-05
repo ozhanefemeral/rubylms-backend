@@ -4,7 +4,11 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
 import axios from "axios";
+import VueApexCharts from 'vue-apexcharts'
+Vue.use(VueApexCharts)
+
 Vue.config.productionTip = false
+Vue.component('apexchart', VueApexCharts)
 
 axios.get('/api/test/school')
   .then(res => res.data)

@@ -12,7 +12,7 @@ const Course = require('../models/Course');
 const Solution = require('../models/Solution');
 
 const COURSE_NAMES = [
-    "English,", "German", "French",
+    "English", "German", "French",
     "Russian", "Spanish", "Chinese",
     "Turkish", "Agriculture", "Literature",
     "Sociology", "Logic", "Mathematics",
@@ -188,6 +188,7 @@ async function createSolutions(tasks, savePromises) {
                 Solution.create({
                     student,
                     task,
+                    duration: Math.floor(300 + (Math.random() * 10) * 30),
                     answers: generateAnswers(tasks[i])
                 })
             )

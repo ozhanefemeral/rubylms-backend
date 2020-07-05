@@ -35,6 +35,7 @@ route.get('/:id', verifyToken, (req, res) => {
     Student.findById(id)
         .populate(popArray)
         .then(student => {
+            console.log(student);
             res.send(student)
         })
 })
@@ -42,6 +43,8 @@ route.get('/:id', verifyToken, (req, res) => {
 route.get('/:id/solutions', verifyToken, (req, res) => {
     const { id } = req.params
     const { select, populate } = req.query;
+
+    console.log(select);
 
     const popArray = populateStringToArray(populate);
 
