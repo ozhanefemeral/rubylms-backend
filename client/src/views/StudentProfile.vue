@@ -2,7 +2,21 @@
   <div>
     <v-row v-if="student">
       <v-col cols="12" lg="6">
-        <v-card>
+        <v-card raised>
+          <v-card-title>
+            Overall Performance
+          </v-card-title>
+          <v-card-text>
+            <apexchart
+              type="bar"
+              :options="overallChartOptions"
+              :series="overallSeries"
+            ></apexchart>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col cols="12" lg="6">
+        <v-card raised>
           <v-card-title>
             Course Performance
           </v-card-title>
@@ -22,27 +36,13 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" lg="6">
-        <v-card>
-          <v-card-title>
-            Overall Performance
-          </v-card-title>
-          <v-card-text>
-            <apexchart
-              type="line"
-              :options="overallChartOptions"
-              :series="overallSeries"
-            ></apexchart>
-          </v-card-text>
-        </v-card>
-      </v-col>
     </v-row>
   </div>
 </template>
 
 <script>
 import StudentService from "../services/StudentService";
-import TaskService from "../services/TaskService";
+// import TaskService from "../services/TaskService";
 
 export default {
   data() {
@@ -57,7 +57,7 @@ export default {
         },
         yaxis: {
           min: 0,
-          max: 100
+          max: 100.1
         }
       },
       courseSeries: [],
@@ -68,12 +68,12 @@ export default {
       },
       overallSeries: [
         {
-          name: "ders 1",
-          data: [30, 40, 35, 50]
+          name: "Student Average",
+          data: new Array()
         },
         {
-          name: "ders 2",
-          data: [80, 90, 55, 20]
+          name: "Course Average",
+          data: new Array()
         }
       ],
       solutions: []
@@ -82,63 +82,121 @@ export default {
 
   created() {
     this.studentId = this.$route.params.studentId;
+
     const populateBody = [
-      { path: "courses", model: "Course", select: ["_id", "name", "teacher"] }
+      {
+        path: "courses",
+        model: "Course",
+        select: ["_id", "name", "teacher"],
+        populate: {
+          path: "tasks",
+          model: "Task",
+          select: ["solutions", "name", "_id"],
+          populate: {
+            path: "solutions",
+            model: "Solution",
+            select: ["mark", "student"]
+          }
+        }
+      }
     ];
+
     StudentService.GetStudent(this.studentId, populateBody).then(student => {
       this.student = student;
 
-      this.selectedCourse = student.courses[0];
+      for (let i = 0; i < student.courses.length; i++) {
+        const c = student.courses[i];
+        let courseSum = 0;
+        let studentCourseSum = 0;
+        let solutionCount = 0;
+        let studentSolutionCount = 0;
+        let taskAverage = 0;
 
-      const select = ["task", "duration", "mark"];
-      const populate = [
-        {
-          path: "task",
-          model: "Task",
-          select: ["name", "_id", "course"],
-          populate: {
-            path: "course",
-            model: "Course",
-            select: "name"
+        for (let j = 0; j < c.tasks.length; j++) {
+          let taskSum = 0;
+          let t = c.tasks[j];
+
+          for (let k = 0; k < t.solutions.length; k++) {
+            const s = t.solutions[k];
+            courseSum += s.mark;
+            taskSum += s.mark;
+            solutionCount++;
+            if (s.student === this.studentId) {
+              this.solutions.push({ ...s, courseId: c._id, taskName: t.name });
+              studentCourseSum += s.mark;
+              studentSolutionCount++;
+            }
           }
-        }
-      ];
 
-      TaskService.FindSolutions(student._id, select, populate).then(
-        solutions => {
-          this.solutions = solutions;
+          taskAverage = (taskSum / c.tasks.length).toFixed(2);
+          t.average = taskAverage;
+          this.student.courses[i].tasks.splice(j, 1, t);
         }
-      );
+
+        let courseAverage = (courseSum / solutionCount).toFixed(2);
+        let studentCourseAverage = (
+          studentCourseSum / studentSolutionCount
+        ).toFixed(2);
+
+        let data0 = {
+          x: c.name,
+          y: studentCourseAverage
+        };
+
+        let data1 = {
+          x: c.name,
+          y: courseAverage
+        };
+
+        this.overallSeries[0].data.push(data0);
+        this.overallSeries[1].data.push(data1);
+      }
     });
   },
 
   watch: {
     selectedCourse() {
-      if (this.solutions.length < 1) {
-        return;
-      }
-      let filtered = this.solutions.filter(
-        s => s.task.course._id === this.selectedCourse
+      const course = this.student.courses.find(
+        c => c._id == this.selectedCourse
       );
+
+      console.log(course);
 
       this.courseSeries = [
         {
-          name: "Mark",
-          data: new Array(filtered.length).fill({ x: "", y: 0 })
+          name: "Student Mark",
+          data: new Array()
         },
         {
-          name: "Duration",
-          data: new Array(filtered.length).fill({ x: "", y: 0 })
+          name: "Task Average",
+          data: new Array()
         }
       ];
 
-      for (let i = 0; i < filtered.length; i++) {
-        const f = filtered[i];
-        let temp = {
-          y: f.mark,
-          x: f.task.name
+      for (let i = 0; i < course.tasks.length; i++) {
+        const task = course.tasks[i];
+
+        let studentSolutions = task.solutions.filter(
+          s => s.student === this.studentId
+        );
+
+        let sum = 0;
+        studentSolutions.forEach(s => {
+          sum += s.mark;
+        });
+
+        let data0 = {
+          x: task.name,
+          y: sum / studentSolutions.length || 0
         };
-        this.$set(this.courseSeries[0].data, i, temp);
+
+        let data1 = {
+          x: task.name,
+          y: task.average
+        };
+
+        this.courseSeries[0].data.push(data0);
+        this.courseSeries[1].data.push(data1);
       }
     }
   }
