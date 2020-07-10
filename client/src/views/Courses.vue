@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Courses</h1>
-    <v-btn color="accent" @click="showCreateCourse = true">Create Course</v-btn>
+    <v-btn tile color="accent" @click="showCreateCourse = true">Create Course</v-btn>
 
     <v-divider class="my-5"></v-divider>
 
@@ -12,7 +12,11 @@
       :viewItem="viewItem"
     />
 
-    <CreateCourse v-model="showCreateCourse" />
+    <customdialog v-model="showCreateCourse">
+      <template #content>
+        <CreateCourse @hideDialog="hideDialog" />
+      </template>
+    </customdialog>
   </div>
 </template>
 
@@ -20,11 +24,13 @@
 import CourseService from "../services/CourseService";
 import CustomTable from "@/components/CustomTable";
 import CreateCourse from "@/components/CreateCourse";
+import customdialog from "@/components/CustomDialog";
 
 export default {
   components: {
     CustomTable,
-    CreateCourse
+    CreateCourse,
+    customdialog
   },
 
   data() {
@@ -43,15 +49,20 @@ export default {
           value: "teachers"
         }
       ],
-      showCreateCourse: false
+      showCreateCourse: false,
+      newCourseName: "",
+      selectedTeachers: []
     };
   },
 
   created() {
-    CourseService.GetAllCourses().then(courses => {
+    const select = ["name", "_id", "teachers", "students"];
+    const populate = [{ path: "teachers", model: "Teacher", select: ["name"] }];
+    CourseService.GetAllCourses(select, populate).then(courses => {
       courses.forEach(element => {
-        element.teachers = element.teachers.map(t => t.name + " ");
+        element.teachers = element.teachers.map(t => " " + t.name);
       });
+      courses = courses.reverse();
       this.courses = courses;
       this.loading = false;
     });
@@ -63,6 +74,13 @@ export default {
         name: "CourseProfile",
         params: { courseId: item._id }
       });
+    },
+
+    hideDialog(course) {
+      this.showCreateCourse = false;
+      if (course != undefined) {
+        this.courses.unshift(course);
+      }
     }
   }
 };

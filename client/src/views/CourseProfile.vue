@@ -4,46 +4,75 @@
       {{ course.name }} - {{ course.teachers[0].name }} - {{ courseAverage }}
     </h1>
     <v-divider class="my-5"></v-divider>
-    <v-btn tile color="primary" @click="showCreateTask = true"
-      >Create Task</v-btn
-    >
+
+    <v-btn tile color="primary" @click="showCreateTask = true">
+      Create Task
+    </v-btn>
+
     <v-btn tile color="accent" class="ml-5" @click="showStudents = true">
       View Students
     </v-btn>
 
-    <v-btn tile color="accent" class="ml-5" @click="showStudents = true">
+    <v-btn tile color="accent" class="ml-5" @click="showAllStudents = true">
       Enroll Students
     </v-btn>
 
+    <v-btn tile color="warning" class="ml-5" @click="showTeachers = true"
+      >Change Teachers</v-btn
+    >
+
     <v-divider class="mt-5"></v-divider>
 
-    <v-dialog v-model="showStudents" width="500">
-      <span v-if="course">
+    <customdialog v-if="course != undefined" v-model="showStudents">
+      <template #content>
         <CustomTable
           :tableData="course.students"
           :headers="headers"
           :loading="loading"
           :viewItem="goStudentProfile"
         />
-      </span>
-    </v-dialog>
+      </template>
+    </customdialog>
 
-    <CustomDialog v-model="showAllStudents"> 
-      <h1>Allah</h1>
-    </CustomDialog>
+    <customdialog v-if="course != undefined" v-model="showTeachers">
+      <template #content>
+        <v-card-text>
+          <v-autocomplete
+            label="Teachers"
+            chips
+            multiple
+            :items="teachers"
+            item-text="name"
+            item-value="_id"
+            v-model="selectedTeachers"
+          >
+          </v-autocomplete>
+        </v-card-text>
+      </template>
+    </customdialog>
+
+    <customdialog v-model="showAllStudents">
+      <template #content>
+        <CustomTable
+          :tableData="allStudents"
+          :headers="headers"
+          :loading="loading"
+          :viewItem="goStudentProfile"
+          selectable
+          @itemSelected="onItemSelected"
+        />
+      </template>
+      <template #actions>
+        <v-btn color="success" @click="enrollStudents">Enroll Students</v-btn>
+      </template>
+    </customdialog>
 
     <v-divider></v-divider>
     <v-row v-if="course != undefined">
-      <v-col
-        sm="12"
-        md="6"
-        lg="3"
-        v-for="(task, index) in course.tasks"
-        :key="index"
-      >
-        <v-card elevation="5" tile>
+      <v-col md="4" lg="3" v-for="(task, index) in course.tasks" :key="index">
+        <v-card raised tile outlined>
           <v-card-text>
-            <p class="text-center text-h3 primary--text">{{ task.name }}</p>
+            <p class="text-center text-h4 primary--text">{{ task.name }}</p>
             <v-divider></v-divider>
             <v-list>
               <v-list-item>
@@ -84,8 +113,8 @@
     </v-row>
 
     <CreateTask
-      v-if="course != undefined"
       v-model="showCreateTask"
+      v-if="course != undefined"
       :students="course.students"
       :course="courseId"
     />
@@ -93,16 +122,18 @@
 </template>
 
 <script>
+import StudentService from "../services/StudentService";
 import CourseService from "../services/CourseService";
 import CreateTask from "@/components/CreateTask";
 import CustomTable from "@/components/CustomTable";
-import CustomDialog from "@/components/CustomDialog";
+import customdialog from "@/components/CustomDialog";
+import TeacherService from "../services/TeacherService";
 
 export default {
   components: {
     CreateTask,
     CustomTable,
-    CustomDialog
+    customdialog
   },
 
   data() {
@@ -113,6 +144,12 @@ export default {
       averages: [],
       showCreateTask: false,
       showAllStudents: false,
+      showStudents: false,
+      showTeachers: false,
+      allStudents: [],
+      selectedStudents: [],
+      selectedTeachers: [],
+      teachers: [],
       headers: [
         {
           text: "Name",
@@ -123,8 +160,7 @@ export default {
           text: "Average",
           value: "average"
         }
-      ],
-      showStudents: false
+      ]
     };
   },
 
@@ -145,20 +181,22 @@ export default {
       { path: "teachers", model: "Teacher", select: ["_id", "name"] }
     ];
     CourseService.GetCourse(this.courseId, populateBody).then(course => {
+      this.selectedTeachers = course.teachers;
       course.tasks.forEach(task => {
         let sum = 0;
-        const length = task.solutions.length;
-        for (let i = 0; i < length; i++) {
+        const solutionsLength = task.solutions.length;
+        for (let i = 0; i < solutionsLength; i++) {
           const sol = task.solutions[i].mark;
           sum += sol;
         }
 
-        const average = sum / length;
+        const average = sum / solutionsLength;
         this.averages.push(average);
       });
       this.loading = false;
 
-      for (let i = 0; i < course.students.length; i++) {
+      let studentsLength = course.students.length;
+      for (let i = 0; i < studentsLength; i++) {
         let student = course.students[i];
         let sum = 0;
         let solutions = [];
@@ -182,13 +220,32 @@ export default {
     courseAverage() {
       let sum = 0;
       this.averages.forEach(el => {
-        sum += parseFloat(el);
+        if (!isNaN(el)) {
+          sum += parseFloat(el);
+        }
       });
       return (sum / this.averages.length).toFixed(2);
     }
   },
 
   methods: {
+    onItemSelected(selected) {
+      this.selectedStudents = selected;
+    },
+
+    enrollStudents() {
+      let enrollPromises = [];
+      this.selectedStudents.forEach(s => {
+        enrollPromises.push(
+          StudentService.EnrollStudent(s._id, [this.courseId])
+        );
+      });
+
+      Promise.all(enrollPromises).then(resolved => {
+        console.log(resolved);
+      });
+    },
+
     goTaskDetails(task) {
       this.$router.push({
         name: "TaskDetails",
@@ -201,6 +258,33 @@ export default {
         name: "StudentProfile",
         params: { studentId: student._id }
       });
+    }
+  },
+
+  watch: {
+    showAllStudents() {
+      if (this.showAllStudents && this.allStudents.length == 0) {
+        this.loading = true;
+        StudentService.GetAllStudents().then(allStudents => {
+          const ids = this.course.students.map(e => e._id);
+          let filtered = allStudents.filter(s => {
+            if (ids.includes(s._id)) {
+              return false;
+            }
+            return true;
+          });
+          this.allStudents = filtered;
+          this.loading = false;
+        });
+      }
+    },
+
+    showTeachers() {
+      if (this.teachers.length == 0) {
+        TeacherService.GetAllTeachers().then(teachers => {
+          this.teachers = teachers;
+        });
+      }
     }
   }
 };

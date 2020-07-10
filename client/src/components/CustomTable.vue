@@ -16,7 +16,11 @@
       :loading-text="loadingText"
       :headers="headersWithActions"
       :items="tableData"
+      item-key="_id"
       :search="search"
+      :show-select="selectable"
+      dense
+      @input="itemSelected"
     >
       <template v-slot:item.actions="{ item }">
         <v-icon color="accent" class="mr-2" @click="viewItem(item)">
@@ -29,7 +33,7 @@
 
 <script>
 export default {
-  props: ["headers", "tableData", "title", "loading", "viewItem"],
+  props: ["headers", "tableData", "title", "loading", "viewItem", "selectable"],
   data() {
     return {
       loadingText: "Loading... Please wait.",
@@ -42,6 +46,11 @@ export default {
         ...this.headers,
         { text: "Actions", value: "actions", sortable: false }
       ];
+    }
+  },
+  methods: {
+    itemSelected(items) {
+      this.$emit("itemSelected", items);
     }
   }
 };

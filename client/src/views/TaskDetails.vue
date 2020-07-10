@@ -1,9 +1,18 @@
 <template>
   <div>
     <h1>
-      Task Details - <span v-if="task"> {{ average }}</span>
+      Task Details - <span v-if="task"> {{ task.name }} - {{ average }}</span>
     </h1>
-    <v-divider></v-divider>
+    <span v-if="task.document">
+      <hr />
+      <div class="my-2">
+        Uploaded document :
+        <a :href="document" target="_blank">
+          {{ task.document }}
+        </a>
+      </div>
+      <hr />
+    </span>
     <v-row v-if="task != undefined">
       <v-col
         cols="12"
@@ -12,7 +21,7 @@
         v-for="(resp, i) in task.responsibles"
         :key="i"
       >
-        <v-card elevation="5" tile>
+        <v-card raised outlined tile>
           <v-card-title>
             {{ resp.name }}
             <v-btn color="primary" icon @click="goToStudentProfile(resp)">
@@ -55,6 +64,7 @@
       :task="task"
       v-model="showSolution"
     />
+    
   </div>
 </template>
 
@@ -94,6 +104,7 @@ export default {
 
     TaskService.GetTask(this.taskId, populate).then(task => {
       this.task = task;
+      console.log(task);
     });
   },
 
@@ -128,6 +139,10 @@ export default {
       });
 
       return sum / length;
+    },
+
+    document() {
+      return "/api/files/" + this.task.document;
     }
   }
 };

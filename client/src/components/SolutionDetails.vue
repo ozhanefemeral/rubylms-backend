@@ -49,7 +49,7 @@
                 Question Point: {{ q.points }}
               </span>
             </v-col>
-            <v-col cols="2" class="pa-0">
+            <v-col cols="2" justify="end" align="end">
               <v-icon size="3rem">{{ compareAnswerIcon(q, i) }}</v-icon>
               <br />
             </v-col>

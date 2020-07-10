@@ -1,11 +1,16 @@
 <template>
-  <v-dialog v-model="show"> </v-dialog>
+  <div>
+    <v-dialog v-model="show" @input="$emit('input')" max-width="600">
+      <v-card>
+        <slot name="content"></slot>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
 export default {
-  props: ["value"],
-
+  props: ["value", "title"],
   computed: {
     show: {
       get() {

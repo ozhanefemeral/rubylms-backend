@@ -5,4 +5,5 @@ export default {
     coursesUrl: '/api/courses',
     tasksUrl: '/api/tasks',
     solutionsUrl: '/api/solutions',
+    filesUrl: '/api/files'
 }

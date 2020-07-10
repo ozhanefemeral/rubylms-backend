@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-btn @click="showEnrollDialog = true" color="accent" tile>
+      Enroll Course
+    </v-btn>
     <v-row v-if="student">
       <v-col cols="12" lg="6">
         <v-card raised>
@@ -37,14 +40,35 @@
         </v-card>
       </v-col>
     </v-row>
+    <customdialog v-model="showEnrollDialog">
+      <template #content>
+        <CustomTable
+          :loading="loading"
+          :tableData="allCourses"
+          :headers="headers"
+          selectable
+          @itemSelected="onItemSelected"
+        />
+      </template>
+      <template #actions>
+        <v-btn color="success" tile @click="enroll">Enroll</v-btn>
+      </template>
+    </customdialog>
   </div>
 </template>
 
 <script>
 import StudentService from "../services/StudentService";
-// import TaskService from "../services/TaskService";
+import CourseService from "../services/CourseService";
+import customdialog from "@/components/CustomDialog";
+import CustomTable from "@/components/CustomTable";
 
 export default {
+  components: {
+    customdialog,
+    CustomTable
+  },
+
   data() {
     return {
       studentId: "",
@@ -76,7 +100,23 @@ export default {
           data: new Array()
         }
       ],
-      solutions: []
+      solutions: [],
+      selectedCoursesEnroll: [],
+      showEnrollDialog: false,
+      allCourses: [],
+      loading: true,
+      headers: [
+        {
+          text: "Name",
+          align: "start",
+          value: "name"
+        },
+        {
+          text: "Teacher",
+          align: "start",
+          value: "teachers"
+        }
+      ]
     };
   },
 
@@ -198,6 +238,34 @@ export default {
         this.courseSeries[0].data.push(data0);
         this.courseSeries[1].data.push(data1);
       }
+    },
+
+    showEnrollDialog() {
+      this.loading = true;
+      if (this.showEnrollDialog && this.allCourses.length == 0) {
+        const select = ["name", "_id", "teachers"];
+        const populate = [
+          { path: "teachers", model: "Teacher", select: ["name"] }
+        ];
+        CourseService.GetAllCourses(select, populate).then(courses => {
+          courses.forEach(element => {
+            element.teachers = element.teachers.map(t => t.name + " ");
+          });
+          this.allCourses = courses;
+          this.loading = false;
+        });
+      }
+    }
+  },
+
+  methods: {
+    enroll() {
+      console.log(this.selectedCoursesEnroll);
+      StudentService.EnrollStudent(this.studentId, this.selectedCoursesEnroll);
+    },
+
+    onItemSelected(selected) {
+      this.selectedCoursesEnroll = selected.map(e => e._id);
     }
   }
 };

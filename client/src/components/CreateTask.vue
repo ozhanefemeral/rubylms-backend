@@ -15,9 +15,19 @@
           <v-tab-item>
             <v-card tile elevation="0">
               <v-card-text>
-                <v-text-field label="Name" outlined></v-text-field>
-                <p>Add Document</p>
-                <v-file-input v-model="document"></v-file-input>
+                <v-text-field
+                  label="Name"
+                  outlined
+                  v-model="name"
+                ></v-text-field>
+                <div class="mt-5">
+                  Add only PDF documents!
+                  <v-file-input
+                    label="Add Document"
+                    accept=".pdf"
+                    v-model="document"
+                  ></v-file-input>
+                </div>
               </v-card-text>
             </v-card>
           </v-tab-item>
@@ -92,6 +102,8 @@
 
 <script>
 import TaskService from "../services/TaskService";
+// import CourseService from "../services/CourseService";
+import FileService from "../services/FileService";
 export default {
   props: ["value", "students", "course"],
 
@@ -100,6 +112,7 @@ export default {
       e1: 1,
       date: "",
       time: "",
+      name: "",
       document: undefined,
       questions: [],
       special: false,
@@ -146,8 +159,9 @@ export default {
       this.$set(this.questions, i, q);
     },
 
-    createTask() {
+    async createTask() {
       let task = {
+        name: this.name,
         questions: this.questions,
         responsibles: this.students,
         course: this.course
@@ -156,6 +170,13 @@ export default {
       if (this.special) {
         task.responsibles = this.selectedStudents;
       }
+
+      if (this.document) {
+        const document = await FileService.UploadFile(this.document);
+        task.document = document;
+      }
+
+      console.log(task);
 
       TaskService.CreateTask(task, this.document).then(task => {
         console.log(task);
