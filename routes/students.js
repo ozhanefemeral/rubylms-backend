@@ -14,11 +14,27 @@ route.post('/', verifyToken, (req, res) => {
         })
 })
 
-route.post('/:studentId/enroll/:courseId', verifyToken, async (req, res) => {
-    const { studentId, courseId } = req.params;
+route.post('/:studentId/enroll/', verifyToken, async (req, res) => {
+    const { studentId } = req.params;
+    const { courses } = req.body;
+
+    let findPromises = [];
+    let savePromises = [];
+
+    courses.forEach(c => {
+        findPromises.push(Course.findById(c))
+    })
+
+    let courseDocs = await Promise.all(findPromises)
+
     Student.findById(studentId)
-        .then(student => {
-            student.courses.push(courseId);
+        .then(async student => {
+            student.courses.push(courses);
+            courseDocs.forEach(c => {
+                c.students.push(studentId);
+                savePromises.push(c.save());
+            })
+            await Promise.all(savePromises);
             return student.save();
         })
         .then(student => {
@@ -42,8 +58,6 @@ route.get('/:id', verifyToken, (req, res) => {
 route.get('/:id/solutions', verifyToken, (req, res) => {
     const { id } = req.params
     const { select, populate } = req.query;
-
-    console.log(select);
 
     const popArray = populateStringToArray(populate);
 

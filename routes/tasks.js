@@ -6,15 +6,11 @@ const Course = require('../models/Course');
 const upload = require('../middlewares/upload');
 const qs = require('qs');
 
-route.post('/', upload.single('document'), async (req, res) => {
-    let { task } = req.body;
-    task = JSON.parse(task);
+route.post('/', async (req, res) => {
+    const taskBody = req.body.task
+    const course = await Course.findById(taskBody.course);
 
-    const course = await Course.findById(task.course);
-
-    req.body.document = req.file.location
-
-    Task.create(req.body)
+    Task.create(taskBody)
         .then(async task => {
             course.tasks.push(task);
             await course.save();

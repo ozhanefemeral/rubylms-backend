@@ -1,3 +1,4 @@
+const qs = require('qs');
 const express = require('express');
 const route = express.Router();
 const School = require('../models/School');
@@ -47,16 +48,33 @@ route.get('/:id/teachers', (req, res) => {
 route.get('/:id/courses', (req, res) => {
     const { id } = req.params;
 
+    const { select, populate } = req.query;
+    const popArray = populateStringToArray(populate);
+    const selectArray = populateStringToArray(select);
+
     School.findById(id)
         .then(school => {
             return Course.find({ school: school._id })
-                .select(['name', '_id', "teachers", 'students'])
-                .populate({ path: 'teachers', model: 'Teacher', select: ['name'] })
+                .select(selectArray)
+                .populate(popArray)
         })
         .then(courses => {
             res.send(courses);
         })
 })
 
+const populateStringToArray = (populateString) => {
+    const popObject = qs.parse(populateString);
+    let popArray = [];
+
+    for (const key in popObject) {
+        if (popObject.hasOwnProperty(key)) {
+            const element = popObject[key];
+            popArray.push(element)
+        }
+    }
+
+    return popArray;
+}
 
 module.exports = route;

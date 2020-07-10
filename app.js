@@ -25,6 +25,7 @@ app.use('/api/courses', require('./routes/courses'));
 app.use('/api/tasks', require('./routes/tasks'));
 app.use('/api/solutions', require('./routes/solutions'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/files', require('./routes/files'));
 app.use('/api/test', require('./routes/test'));
 
 app.use(express.static(__dirname + '/public/'));
