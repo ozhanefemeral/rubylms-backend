@@ -56,7 +56,7 @@ solutionSchema.pre('save', async function (next) {
         const answer = currentQuestion.answer.toString().toLowerCase();
         let studentAnswer = this.answers[index]
 
-        if (answer == studentAnswer.value.toLowerCase()) {
+        if (answer == studentAnswer.value.toString().toLowerCase()) {
             this.answers[index].points = currentQuestion.points
         }
     }
