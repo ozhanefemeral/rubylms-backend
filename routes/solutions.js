@@ -18,7 +18,7 @@ route.post('/', verifyToken, (req, res) => {
 route.get('/find', verifyToken, (req, res) => {
     const { query } = req.query;
     const queryObj = qs.parse(query);
-    
+
     console.log(queryObj);
 
     Solution.find(queryObj)
@@ -29,10 +29,30 @@ route.get('/find', verifyToken, (req, res) => {
 
 route.get('/:id', verifyToken, (req, res) => {
     const { id } = req.params
+
+    const { select, populate } = req.query;
+    const popArray = populateStringToArray(populate);
+
     Solution.findById(id)
+        .select(select)
+        .populate(popArray)
         .then(solution => {
             res.send(solution)
         })
 })
+
+const populateStringToArray = (populateString) => {
+    const popObject = qs.parse(populateString);
+    let popArray = [];
+
+    for (const key in popObject) {
+        if (popObject.hasOwnProperty(key)) {
+            const element = popObject[key];
+            popArray.push(element)
+        }
+    }
+
+    return popArray;
+}
 
 module.exports = route;
