@@ -22,25 +22,14 @@ route.post('/', verifyToken, async (req, res) => {
         })
 })
 
-route.post('/:id', verifyToken, async (req, res) => {
+route.patch('/:id', verifyToken, (req, res) => {
     const { id } = req.params;
-    const { students } = req.body;
+    const { course } = req.body;
 
-    Course.findById(id)
-        .then(async course => {
-            let studentsMerged = course.students.concat(students);
-            let promises = []
-            students.forEach(st => {
-                promises.push(Student.findOneAndUpdate({ _id: st }, { $push: { "courses": course } }))
-            });
-
-            await Promise.all(promises)
-
-            course.students = studentsMerged;
-
-            await course.save();
-            res.send(course)
-        })
+    Course.update({ _id: id }, course)
+        .then(c => {
+            res.send(c)
+        });
 })
 
 route.get('/:id', verifyToken, (req, res) => {

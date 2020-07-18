@@ -6,6 +6,9 @@ const taskSchema = new Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+    },
     solutions: {
         type: [Schema.Types.ObjectId],
         ref: 'Solution'
@@ -30,7 +33,11 @@ const taskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Course'
     },
-    expirationDate: Date
+    expirationDate: Date,
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    }
 })
 
 const Task = mongoose.model('Task', taskSchema);

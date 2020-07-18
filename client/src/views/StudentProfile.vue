@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn @click="showEnrollDialog = true" color="accent" tile>
+    <v-btn @click="showEnrollDialog = true" color="primary" tile>
       Enroll Course
     </v-btn>
     <v-row v-if="student">
@@ -88,6 +88,9 @@ export default {
       overallChartOptions: {
         chart: {
           id: "vuechart-example"
+        },
+        xaxis: {
+          tickAmount: "dataPoints"
         }
       },
       overallSeries: [
@@ -199,8 +202,6 @@ export default {
       const course = this.student.courses.find(
         c => c._id == this.selectedCourse
       );
-
-      console.log(course);
 
       this.courseSeries = [
         {

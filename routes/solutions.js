@@ -15,10 +15,20 @@ route.post('/', verifyToken, (req, res) => {
         })
 })
 
+route.patch('/:id', verifyToken, (req, res) => {
+    const { id } = req.params;
+    const { solution } = req.body;
+
+    Solution.update({ _id: id }, solution)
+        .then(s => {
+            res.send(s)
+        });
+})
+
 route.get('/find', verifyToken, (req, res) => {
     const { query } = req.query;
     const queryObj = qs.parse(query);
-    
+
     console.log(queryObj);
 
     Solution.find(queryObj)

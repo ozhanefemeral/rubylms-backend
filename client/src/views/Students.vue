@@ -1,7 +1,11 @@
 <template>
   <div>
-    <h1>Students</h1>
-    <v-btn color="accent" tile @click.stop="showCustomDialog = true">
+    <v-btn
+      color="primary"
+      class="mb-2"
+      tile
+      @click.stop="showCreateStudent = true"
+    >
       Create Student
     </v-btn>
     <v-divider></v-divider>
@@ -13,7 +17,7 @@
       :viewItem="goStudentProfile"
     />
 
-    <customdialog v-model="showCustomDialog">
+    <customdialog v-model="showCreateStudent">
       <template #content>
         <CreateStudent @hideDialog="hideDialog" />
       </template>
@@ -45,7 +49,7 @@ export default {
           value: "name"
         }
       ],
-      showCustomDialog: false
+      showCreateStudent: false
     };
   },
 
@@ -65,7 +69,7 @@ export default {
     },
 
     hideDialog(student) {
-      this.showCustomDialog = false;
+      this.showCreateStudent = false;
       if (student != undefined) {
         this.students.unshift(student);
       }

@@ -21,4 +21,9 @@ export default class TaskService {
         const res = await axios.get(`${config.studentsUrl}/${studentId}/solutions`, { params: { select, populate } })
         return res.data;
     }
+
+    static async UpdateSolution(id, solution) {
+        const res = await axios.patch(`${config.solutionsUrl}/${id}`, { solution });
+        return res.data;
+    }
 }

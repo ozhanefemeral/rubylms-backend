@@ -3,7 +3,7 @@
     <h1>
       Task Details - <span v-if="task"> {{ task.name }} - {{ average }}</span>
     </h1>
-    <span v-if="task.document">
+    <span v-if="task && task.document">
       <hr />
       <div class="my-2">
         Uploaded document :
@@ -64,7 +64,6 @@
       :task="task"
       v-model="showSolution"
     />
-    
   </div>
 </template>
 
