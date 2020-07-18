@@ -54,11 +54,15 @@ solutionSchema.pre('save', async function (next) {
         }
 
         const answer = currentQuestion.answer.toString().toLowerCase();
-        let studentAnswer = this.answers[index]
 
-        if (answer == studentAnswer.value.toString().toLowerCase()) {
-            this.answers[index].points = currentQuestion.points
+        let studentAnswer;
+
+        if (answer == this.answers[index].toLowerCase()) {
+            studentAnswer.value = this.answers[index];
+            studentAnswer.points = currentQuestion.points;
         }
+
+        this.answers[index] = studentAnswer;
     }
 
     this.answers.forEach(a => {
