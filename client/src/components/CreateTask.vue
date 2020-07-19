@@ -20,11 +20,17 @@
                 outlined
                 v-model="name"
               ></v-text-field>
-              <v-checkbox
-                v-model="isOnlyOnce"
-                prepend-icon="mdi-lock"
-                :label="`Can be solved once: ${isOnlyOnce ? 'Yes' : 'No'}`"
-              ></v-checkbox>
+              <v-col sm="3" cols="12" offset-sm="9">
+                <v-text-field
+                  v-model="chances"
+                  label="Chances"
+                  outlined
+                  type="number"
+                  min="1"
+                  max="5"
+                >
+                </v-text-field>
+              </v-col>
               <div class="mt-5">
                 Add only PDF documents!
                 <v-file-input
@@ -39,6 +45,7 @@
         <v-tab-item>
           <v-card elevation="0">
             <v-card-text>
+              Total Mark is: {{ totalMark }}
               <v-card
                 outlined
                 class="my-5"
@@ -63,6 +70,7 @@
                     ></v-switch>
                     <v-col sm="3" cols="12">
                       <v-text-field
+                        v-model="q.points"
                         prepend-inner-icon="mdi-star-circle"
                         type="number"
                         min="0"
@@ -81,15 +89,14 @@
                     v-model="q.answer"
                   ></v-textarea>
                   <div v-else>
-                    <v-row>
+                    <v-row justify="center" align="center">
                       <v-col>
                         <v-btn
                           class="my-3"
                           @click="addChoice(q)"
                           tile
-                          outlined
-                          color="primary"
                           block
+                          color="primary"
                         >
                           Add Choice
                         </v-btn>
@@ -106,20 +113,23 @@
                         </v-select>
                       </v-col>
                     </v-row>
-                    <v-row
-                      v-for="(c, cIndex) in q.choices"
-                      :key="cIndex"
-                      class="px-3 my-3"
-                    >
-                      <v-textarea
-                        rows="1"
-                        auto-grow
-                        outlined
-                        color="accent"
-                        :background-color="checkCorrect(q, c)"
-                        :label="'Choice ' + String.fromCharCode(65 + cIndex)"
-                        v-model="q.choices[cIndex]"
-                      ></v-textarea>
+                    <v-row class="px-3 my-3">
+                      <v-col
+                        cols="12"
+                        sm="3"
+                        v-for="(c, cIndex) in q.choices"
+                        :key="cIndex"
+                      >
+                        <v-textarea
+                          rows="1"
+                          auto-grow
+                          outlined
+                          color="accent"
+                          :background-color="checkCorrect(q, c)"
+                          :label="'Choice ' + String.fromCharCode(65 + cIndex)"
+                          v-model="q.choices[cIndex]"
+                        ></v-textarea>
+                      </v-col>
                     </v-row>
                   </div>
                 </v-card-text>
@@ -138,15 +148,17 @@
                 v-model="special"
                 :label="special.toString()"
               ></v-switch>
-              <v-select
-                multiple
+              <v-autocomplete
                 v-if="special"
+                label="Students"
+                chips
+                multiple
                 :items="students"
                 item-text="name"
                 item-value="_id"
                 v-model="selectedStudents"
               >
-              </v-select>
+              </v-autocomplete>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -174,7 +186,7 @@ export default {
       name: "",
       document: undefined,
       questions: [],
-      isOnlyOnce: true,
+      chances: 1,
       special: false,
       selectedStudents: []
     };
@@ -188,20 +200,36 @@ export default {
       set(value) {
         this.$emit("input", value);
       }
+    },
+
+    totalMark() {
+      let total = 0;
+      this.questions.forEach(q => {
+        total += parseFloat(q.points);
+      });
+      return total;
     }
   },
 
   watch: {
     document(val) {
       console.log(val);
+    },
+
+    chances(val) {
+      console.log(val);
+      if (val < 1 || val > 5) {
+        this.chances = 1;
+      }
     }
   },
 
   methods: {
     addQuestion() {
       this.questions.push({
-        text: "",
+        text: "Q1",
         answer: "",
+        points: 0,
         answerType: "Classical",
         choices: []
       });
