@@ -1,97 +1,156 @@
 <template>
-  <v-dialog persistent v-model="show" width="50vw">
+  <v-dialog persistent v-model="show" max-width="720">
     <v-card>
-      <v-card-text>
-        <v-tabs fixed-tabs background-color="primary" dark>
-          <v-tab>
-            General
-          </v-tab>
-          <v-tab>
-            Questions
-          </v-tab>
-          <v-tab>
-            Responsibles
-          </v-tab>
-          <v-tab-item>
-            <v-card tile elevation="0">
-              <v-card-text>
-                <v-text-field
-                  label="Name"
-                  outlined
-                  v-model="name"
-                ></v-text-field>
-                <div class="mt-5">
-                  Add only PDF documents!
-                  <v-file-input
-                    label="Add Document"
-                    accept=".pdf"
-                    v-model="document"
-                  ></v-file-input>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card elevation="0">
-              <v-card-text>
-                <v-card
-                  outlined
-                  class="my-5"
-                  v-for="(q, index) in questions"
-                  :key="index"
-                >
-                  <v-card-text>
-                    <v-textarea
-                      label="Question Text"
-                      v-model="q.text"
-                      :auto-grow="true"
-                      rows="1"
-                    ></v-textarea>
-                    <v-row>
-                      <v-switch
-                        @change="changeAnswerType(index)"
-                        :label="q.answerType"
-                        class="mx-5"
-                      ></v-switch>
+      <v-tabs fixed-tabs background-color="primary" dark>
+        <v-tab>
+          General
+        </v-tab>
+        <v-tab>
+          Questions
+        </v-tab>
+        <v-tab>
+          Responsibles
+        </v-tab>
+        <v-tab-item>
+          <v-card tile elevation="0">
+            <v-card-text>
+              <v-text-field
+                prepend-inner-icon="mdi-pen"
+                label="Name"
+                outlined
+                v-model="name"
+              ></v-text-field>
+              <v-checkbox
+                v-model="isOnlyOnce"
+                prepend-icon="mdi-lock"
+                :label="`Can be solved once: ${isOnlyOnce ? 'Yes' : 'No'}`"
+              ></v-checkbox>
+              <div class="mt-5">
+                Add only PDF documents!
+                <v-file-input
+                  label="Add Document"
+                  accept=".pdf"
+                  v-model="document"
+                ></v-file-input>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card elevation="0">
+            <v-card-text>
+              <v-card
+                outlined
+                class="my-5"
+                v-for="(q, index) in questions"
+                :key="index"
+                style="border: 1.5px solid rgb(0,0,0, 0.7);"
+              >
+                <v-card-text>
+                  <v-textarea
+                    prepend-inner-icon="mdi-pencil"
+                    outlined
+                    :label="'Question ' + (index + 1)"
+                    v-model="q.text"
+                    :auto-grow="true"
+                    rows="1"
+                  ></v-textarea>
+                  <v-row align="center">
+                    <v-switch
+                      @change="changeAnswerType(index)"
+                      :label="q.answerType"
+                      class="mx-5"
+                    ></v-switch>
+                    <v-col sm="3" cols="12">
                       <v-text-field
-                        label="Answer"
-                        :tick-labels="[2, 3, 4, 5]"
-                        v-if="q.answerType == 'Classical'"
-                        v-model="q.answer"
-                        class="mx-5"
+                        prepend-inner-icon="mdi-star-circle"
+                        type="number"
+                        min="0"
+                        max="100"
+                        label="Points"
+                        outlined
                       ></v-text-field>
-                      <v-card-text> </v-card-text>
+                    </v-col>
+                  </v-row>
+                  <v-textarea
+                    outlined
+                    rows="1"
+                    auto-grow
+                    label="Answer"
+                    v-if="q.answerType == 'Classical'"
+                    v-model="q.answer"
+                  ></v-textarea>
+                  <div v-else>
+                    <v-row>
+                      <v-col>
+                        <v-btn
+                          class="my-3"
+                          @click="addChoice(q)"
+                          tile
+                          outlined
+                          color="primary"
+                          block
+                        >
+                          Add Choice
+                        </v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-select
+                          outlined
+                          color="accent"
+                          label="Answer"
+                          :disabled="q.choices.length == 0"
+                          :items="q.choices"
+                          v-model="q.answer"
+                        >
+                        </v-select>
+                      </v-col>
                     </v-row>
-                  </v-card-text>
-                </v-card>
-                <v-btn tile block color="primary" @click="addQuestion">
-                  Add Question
-                </v-btn>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-          <v-tab-item>
-            <v-card tile elevation="0" height="500px">
-              <v-card-text>
-                <p>Is it only for selected students?</p>
-                <v-switch
-                  v-model="special"
-                  :label="special.toString()"
-                ></v-switch>
-                <v-select
-                  multiple
-                  v-if="special"
-                  :items="students"
-                  item-text="name"
-                  item-value="_id"
-                  v-model="selectedStudents"
-                >
-                </v-select>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-        </v-tabs>
-      </v-card-text>
+                    <v-row
+                      v-for="(c, cIndex) in q.choices"
+                      :key="cIndex"
+                      class="px-3 my-3"
+                    >
+                      <v-textarea
+                        rows="1"
+                        auto-grow
+                        outlined
+                        color="accent"
+                        :background-color="checkCorrect(q, c)"
+                        :label="'Choice ' + String.fromCharCode(65 + cIndex)"
+                        v-model="q.choices[cIndex]"
+                      ></v-textarea>
+                    </v-row>
+                  </div>
+                </v-card-text>
+              </v-card>
+              <v-btn tile block color="success" @click="addQuestion">
+                Add Question
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card tile elevation="0" height="500px">
+            <v-card-text>
+              <p>Is it only for selected students?</p>
+              <v-switch
+                v-model="special"
+                :label="special.toString()"
+              ></v-switch>
+              <v-select
+                multiple
+                v-if="special"
+                :items="students"
+                item-text="name"
+                item-value="_id"
+                v-model="selectedStudents"
+              >
+              </v-select>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
       <v-card-actions>
         <v-btn color="success" tile @click="createTask">Save</v-btn>
         <v-btn color="warning" tile @click.stop="cancel">Cancel</v-btn>
@@ -115,6 +174,7 @@ export default {
       name: "",
       document: undefined,
       questions: [],
+      isOnlyOnce: true,
       special: false,
       selectedStudents: []
     };
@@ -147,6 +207,10 @@ export default {
       });
     },
 
+    addChoice(q) {
+      q.choices.push(String.fromCharCode(65 + q.choices.length));
+    },
+
     changeAnswerType(i) {
       let q = this.questions[i];
 
@@ -163,6 +227,7 @@ export default {
       let task = {
         name: this.name,
         questions: this.questions,
+        isOnlyOnce: this.isOnlyOnce,
         responsibles: this.students,
         course: this.course
       };
@@ -175,8 +240,6 @@ export default {
         const document = await FileService.UploadFile(this.document);
         task.document = document;
       }
-
-      console.log(task);
 
       TaskService.CreateTask(task, this.document).then(task => {
         console.log(task);
@@ -193,6 +256,10 @@ export default {
       this.special = false;
       this.selectedStudents = [];
       this.show = false;
+    },
+
+    checkCorrect(q, c) {
+      return q.answer == c ? "success" : "";
     }
   }
 };
