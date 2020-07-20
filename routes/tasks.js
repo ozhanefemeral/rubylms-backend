@@ -20,28 +20,29 @@ route.post('/', async (req, res) => {
 
 route.get('/:id', (req, res) => {
     const { id } = req.params
+    const { populate } = req.query;
 
-    if (req.query[0] != undefined) {
-        const query = qs.parse(req.query[0]);
-        let queryArray = [];
+    const popArray = populateStringToArray(populate);
 
-        for (const key in query) {
-            if (query.hasOwnProperty(key)) {
-                const element = query[key];
-                queryArray.push(element)
-            }
-        }
-
-        Task.findById(id).populate(queryArray)
-            .then(task => {
-                res.send(task)
-            })
-    } else {
-        Task.findById(id)
-            .then(task => {
-                res.send(task)
-            })
-    }
+    Task.findById(id)
+        .populate(popArray)
+        .then(task => {
+            res.send(task)
+        })
 })
+
+const populateStringToArray = (populateString) => {
+    const popObject = qs.parse(populateString);
+    let popArray = [];
+
+    for (const key in popObject) {
+        if (popObject.hasOwnProperty(key)) {
+            const element = popObject[key];
+            popArray.push(element)
+        }
+    }
+
+    return popArray;
+}
 
 module.exports = route;
