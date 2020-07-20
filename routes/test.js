@@ -221,7 +221,8 @@ function generateTask() {
 
     const task = {
         questions,
-        name
+        name,
+        chances: 1
     }
 
     return task;
