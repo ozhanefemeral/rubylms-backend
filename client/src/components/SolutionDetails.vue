@@ -4,7 +4,7 @@
       <v-card-title>
         <v-row> <v-icon>mdi-account</v-icon>{{ student.name }} </v-row>
         <br />
-        <v-row> <v-icon>mdi-star</v-icon>{{ solution.mark }} </v-row>
+        <v-row> <v-icon>mdi-star</v-icon>{{ mark }} </v-row>
         <br />
         <v-row>
           <v-icon>mdi-calendar-clock</v-icon>
@@ -22,7 +22,9 @@
               <span v-if="q.answerType === 'Test'">
                 <br />
                 <details class="black--text">
-                  <summary>Choices </summary>
+                  <summary>
+                    Choices
+                  </summary>
                   <ul>
                     <li v-for="(c, j) in q.choices" :key="j">
                       {{ q.choices[j] }}
@@ -31,7 +33,7 @@
                   </ul>
                 </details>
                 <span>
-                  Student Answer: {{ q.choices[solution.answers[i]] }}
+                  Student Answer: {{ q.choices[solution.answers[i].value] }}
                 </span>
                 <br />
                 <span class="black--text">
@@ -40,7 +42,7 @@
               </span>
               <span v-else>
                 <br />
-                <span> Student Answer: {{ solution.answers[i] }} </span>
+                <span> Student Answer: {{ solution.answers[i].value }} </span>
                 <br />
                 <span class="black--text"> Answer: {{ q.answer }}</span>
               </span>
@@ -52,15 +54,31 @@
             <v-col cols="2" justify="end" align="end">
               <v-icon size="3rem">{{ compareAnswerIcon(q, i) }}</v-icon>
               <br />
+              <v-text-field
+                type="number"
+                v-model="solution.answers[i].points"
+                outlined
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-card-text>
       </v-card>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="success"
+          :disabled="solution.mark == mark"
+          @click="updateSolution"
+        >
+          Update
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+import TaskService from "../services/TaskService";
 export default {
   props: ["solution", "student", "value", "task"],
 
@@ -72,12 +90,20 @@ export default {
       set(value) {
         this.$emit("input", value);
       }
+    },
+
+    mark() {
+      let sum = 0;
+      this.solution.answers.forEach(a => {
+        sum += parseFloat(a.points);
+      });
+      return sum;
     }
   },
 
   methods: {
     compareAnswerText(q, i) {
-      const isCorrect = q.answer == this.solution.answers[i];
+      const isCorrect = q.answer == this.solution.answers[i].value;
       return {
         "black--text": q.answer == undefined,
         "success--text": isCorrect,
@@ -88,6 +114,12 @@ export default {
     compareAnswerIcon(q, i) {
       const isCorrect = q.answer == this.solution.answers[i];
       return isCorrect ? "mdi-check-circle" : "mdi-close-circle";
+    },
+
+    updateSolution() {
+      TaskService.UpdateSolution(this.solution._id, this.solution).then(res => {
+        console.log(res.data);
+      });
     }
   }
 };

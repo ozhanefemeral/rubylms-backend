@@ -234,11 +234,11 @@ function generateAnswers(task) {
         let rnd = Math.random();
 
         if (rnd > 0.15) {
-            answers.push(q.answer)
+            answers.push({ value: q.answer })
         } else if (q.answerType === 'Test') {
-            answers.push(1);
+            answers.push({ value: 1 });
         } else {
-            answers.push('WRONG TEXT')
+            answers.push({ value: 'WRONG TEXT' })
         }
     }
 

@@ -6,6 +6,16 @@ const taskSchema = new Schema({
         type: String,
         required: true,
     },
+    course: {
+        type: Schema.Types.ObjectId,
+        ref: 'Course',
+        required: true
+    },
+    chances: {
+        type: Number,
+        min: 1,
+        max: 5
+    },
     solutions: {
         type: [Schema.Types.ObjectId],
         ref: 'Solution'
@@ -14,23 +24,17 @@ const taskSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Student'
     },
-    type: {
-        type: String,
-        enum: ['document', 'custom'],
-        default: 'custom'
-    },
     questions: {
         type: [Object],
-        default: [{ text: "Question 1", answer: "a", choices: ["a", "b", "c", "d"], points: 100 }]
     },
     document: {
         type: String
     },
-    course: {
-        type: Schema.Types.ObjectId,
-        ref: 'Course'
-    },
-    expirationDate: Date
+    expirationDate: Date,
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    }
 })
 
 const Task = mongoose.model('Task', taskSchema);

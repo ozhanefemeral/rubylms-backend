@@ -41,6 +41,15 @@ route.get('/:id', verifyToken, (req, res) => {
         })
 })
 
+route.patch('/:id', verifyToken, (req, res) => {
+    const { id } = req.params
+
+    Solution.findByIdAndUpdate(id, { $set: req.body })
+        .then(solution => {
+            res.send(solution)
+        })
+})
+
 const populateStringToArray = (populateString) => {
     const popObject = qs.parse(populateString);
     let popArray = [];

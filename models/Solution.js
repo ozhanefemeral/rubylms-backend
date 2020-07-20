@@ -3,8 +3,15 @@ const Schema = mongoose.Schema
 
 const solutionSchema = new Schema({
     answers: {
-        type: [String],
-        default: ["a"]
+        type: [{
+            value: {
+                type: String
+            },
+            points: {
+                type: Number,
+                default: 0
+            }
+        }],
     },
     task: {
         type: Schema.Types.ObjectId,
@@ -41,8 +48,9 @@ solutionSchema.pre('save', async function (next) {
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {
         const crntQuestion = task.questions[index];
-        if (crntQuestion.answer == this.answers[index]) {
+        if (crntQuestion.answer == this.answers[index].value) {
             mark += crntQuestion.points;
+            this.answers[index].points = crntQuestion.points;
         }
     }
 
