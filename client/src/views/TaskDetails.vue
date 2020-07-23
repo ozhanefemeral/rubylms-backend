@@ -3,7 +3,7 @@
     <h1>
       Task Details - <span v-if="task"> {{ task.name }} - {{ average }}</span>
     </h1>
-    <span v-if="task.document">
+    <span v-if="task && task.document">
       <hr />
       <div class="my-2">
         Uploaded document :
@@ -33,7 +33,7 @@
             <v-card
               outlined
               v-for="(sol, j) in task.solutions.filter(
-                el => resp._id === el.student
+                (el) => resp._id === el.student
               )"
               :key="j"
             >
@@ -64,7 +64,6 @@
       :task="task"
       v-model="showSolution"
     />
-    
   </div>
 </template>
 
@@ -74,7 +73,7 @@ import SolutionDetails from "../components/SolutionDetails";
 
 export default {
   components: {
-    SolutionDetails
+    SolutionDetails,
   },
 
   data() {
@@ -83,26 +82,28 @@ export default {
       task: undefined,
       showSolution: false,
       selectedSolution: undefined,
-      selectedStudent: undefined
+      selectedStudent: undefined,
     };
   },
 
   created() {
     this.taskId = this.$route.params.taskId;
+    this.task = this.$route.params.task;
+    console.log(this.task);
 
     const populate = [
       {
         path: "solutions",
-        model: "Solution"
+        model: "Solution",
       },
       {
         path: "responsibles",
         model: "Student",
-        select: ["name", "_id"]
-      }
+        select: ["name", "_id"],
+      },
     ];
 
-    TaskService.GetTask(this.taskId, populate).then(task => {
+    TaskService.GetTask(this.taskId, populate).then((task) => {
       this.task = task;
       console.log(task);
     });
@@ -124,9 +125,9 @@ export default {
     goToStudentProfile(item) {
       this.$router.push({
         name: "StudentProfile",
-        params: { studentId: item._id }
+        params: { studentId: item._id },
       });
-    }
+    },
   },
 
   computed: {
@@ -134,7 +135,7 @@ export default {
       let sum = 0;
       const length = this.task.solutions.length;
 
-      this.task.solutions.forEach(element => {
+      this.task.solutions.forEach((element) => {
         sum += element.mark;
       });
 
@@ -143,8 +144,8 @@ export default {
 
     document() {
       return "/api/files/" + this.task.document;
-    }
-  }
+    },
+  },
 };
 </script>
 

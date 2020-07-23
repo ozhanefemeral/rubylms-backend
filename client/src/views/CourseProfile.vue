@@ -249,7 +249,7 @@ export default {
     goTaskDetails(task) {
       this.$router.push({
         name: "TaskDetails",
-        params: { taskId: task._id }
+        params: { task, taskId: task._id }
       });
     },
 

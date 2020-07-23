@@ -39,7 +39,8 @@ const solutionSchema = new Schema({
     solvedAt: {
         type: Date,
         default: Date.now()
-    }
+    },
+    comment: String
 })
 
 solutionSchema.pre('save', async function (next) {

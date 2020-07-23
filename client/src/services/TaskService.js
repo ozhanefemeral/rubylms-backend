@@ -11,7 +11,7 @@ export default class TaskService {
 
     static async GetTask(id, populate = undefined) {
         populate = qs.stringify(populate)
-        const res = await axios.get(`${config.tasksUrl}/${id}`, { params: populate });
+        const res = await axios.get(`${config.tasksUrl}/${id}`, { params: { populate } });
         return res.data;
     }
 
@@ -19,7 +19,7 @@ export default class TaskService {
         populate = qs.stringify(populate);
         // select = qs.stringify(select);
         const res = await axios.get(`${config.studentsUrl}/${studentId}/solutions`, { params: { select, populate } })
-        return res.data;    
+        return res.data;
     }
 
     static async UpdateSolution(id, solutionBody) {

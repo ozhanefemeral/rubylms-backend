@@ -24,6 +24,8 @@ route.get('/:id', (req, res) => {
 
     const popArray = populateStringToArray(populate);
 
+    console.log(popArray);
+
     Task.findById(id)
         .populate(popArray)
         .then(task => {

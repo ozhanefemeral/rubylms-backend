@@ -39,6 +39,12 @@
                   v-model="document"
                 ></v-file-input>
               </div>
+              <v-textarea
+                label="Task Description"
+                outlined
+                v-model="description"
+              >
+              </v-textarea>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -188,7 +194,8 @@ export default {
       questions: [],
       chances: 1,
       special: false,
-      selectedStudents: []
+      selectedStudents: [],
+      description: ""
     };
   },
 
@@ -257,7 +264,8 @@ export default {
         questions: this.questions,
         isOnlyOnce: this.isOnlyOnce,
         responsibles: this.students,
-        course: this.course
+        course: this.course,
+        description: this.description
       };
 
       if (this.special) {

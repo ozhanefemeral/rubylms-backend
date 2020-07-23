@@ -6,6 +6,9 @@ const taskSchema = new Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String
+    },
     course: {
         type: Schema.Types.ObjectId,
         ref: 'Course',
@@ -34,7 +37,7 @@ const taskSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now()
-    }
+    },
 })
 
 const Task = mongoose.model('Task', taskSchema);

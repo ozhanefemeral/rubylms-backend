@@ -222,7 +222,7 @@ function generateTask() {
     const task = {
         questions,
         name,
-        chances: 1
+        chances: 2
     }
 
     return task;
@@ -235,6 +235,7 @@ function generateAnswers(task) {
         let rnd = Math.random();
 
         if (rnd > 0.15) {
+            console.log(q.answer);
             answers.push({ value: q.answer })
         } else if (q.answerType === 'Test') {
             answers.push({ value: 1 });
