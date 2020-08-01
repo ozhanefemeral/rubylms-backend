@@ -122,7 +122,7 @@
                     <v-row class="px-3 my-3">
                       <v-col
                         cols="12"
-                        sm="3"
+                        sm="6"
                         v-for="(c, cIndex) in q.choices"
                         :key="cIndex"
                       >
