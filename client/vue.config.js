@@ -7,7 +7,7 @@ module.exports = {
       historyApiFallback: true
     }
   },
-  "outputDir": "E:\\masaüstü\\iş\\ruby\\public",
+  "outputDir": "C:\\Users\\Efe\\Desktop\\iş\\ruby\\public",
   "devServer": {
     "proxy": {
       "/": {
