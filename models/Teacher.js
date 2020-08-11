@@ -20,15 +20,10 @@ const teacherSchema = new Schema({
 })
 
 teacherSchema.pre('save', function (next) {
-    if (this.__v === 0) {
-        bcrypt.hash(this.password, 10, (err, enc) => {
-            this.password = enc;
-            next();
-        })
-    } else {
+    bcrypt.hash(this.password, 10, (err, enc) => {
+        this.password = enc;
         next();
-    }
-
+    })
 })
 
 const Teacher = mongoose.model('Teacher', teacherSchema);

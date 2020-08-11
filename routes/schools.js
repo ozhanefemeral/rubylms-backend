@@ -35,6 +35,7 @@ route.get('/:id/students', (req, res) => {
 
 route.get('/:id/teachers', (req, res) => {
     const { id } = req.params
+    console.log(id);
 
     School.findById(id)
         .then(school => {

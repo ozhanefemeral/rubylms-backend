@@ -40,7 +40,7 @@ route.post('/login/teacher', (req, res) => {
                     };
 
                     jwt.sign(token, '5489d9845m', (err, token) => {
-                        res.json(token);
+                        res.json({ token, school: teacher.school });
                     });
                 } else {
                     res.sendStatus(400);
