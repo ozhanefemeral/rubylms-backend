@@ -4,11 +4,7 @@
     <v-card raised>
       <v-card-text>
         <v-text-field label="Phone Number" v-model="phone"></v-text-field>
-        <v-text-field
-          label="Password"
-          v-model="password"
-          type="password"
-        ></v-text-field>
+        <v-text-field label="Password" v-model="password" type="password"></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="login">Login</v-btn>
@@ -23,7 +19,7 @@ export default {
   data() {
     return {
       phone: "05375602191",
-      password: "efemeral1"
+      password: "efemeral1",
     };
   },
 
@@ -32,15 +28,16 @@ export default {
       axios
         .post("/api/auth/login/teacher", {
           phone: this.phone,
-          password: this.password
+          password: this.password,
         })
-        .then(res => res.data)
-        .then(token => {
+        .then((res) => res.data)
+        .then(({ token, school }) => {
           this.$store.commit("setToken", token);
+          this.$store.commit("setSchool", school);
           this.$router.push("Home");
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

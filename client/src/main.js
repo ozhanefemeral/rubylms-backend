@@ -13,6 +13,7 @@ Vue.component('apexchart', VueApexCharts)
 axios.get('/api/test/school')
   .then(res => res.data)
   .then(school => {
+    console.log(school);
     store.commit('setSchool', school._id);
   })
 

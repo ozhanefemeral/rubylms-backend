@@ -11,6 +11,7 @@ export default new Vuex.Store({
   mutations: {
     setSchool(state, value) {
       state.school = value;
+      console.log(state.school);
     },
     setToken(state, value) {
       localStorage.token = value;
