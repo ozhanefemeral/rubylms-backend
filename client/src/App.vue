@@ -62,7 +62,7 @@
 <script>
 export default {
   data: () => ({
-    drawer: null,
+    drawer: true,
     navLinks: [
       {
         to: "/",

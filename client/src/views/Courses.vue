@@ -1,9 +1,10 @@
 <template>
   <div>
-    <h1>Courses</h1>
-    <v-btn tile color="accent" @click="showCreateCourse = true">Create Course</v-btn>
+    <v-btn tile color="primary" @click="showCreateCourse = true">
+      Create Course
+    </v-btn>
 
-    <v-divider class="my-5"></v-divider>
+    <v-divider class="my-2"></v-divider>
 
     <CustomTable
       :tableData="courses"

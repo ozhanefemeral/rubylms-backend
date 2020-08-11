@@ -42,8 +42,9 @@
               color="accent"
               :disabled="!selectedTeacher"
               @click="createCourse"
-              >Create Course</v-btn
             >
+              Create Course
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
@@ -117,8 +118,10 @@ export default {
       })
     );
 
+    const select = ["name", "_id", "teachers", "students"];
+    const populate = [{ path: "teachers", model: "Teacher", select: ["name"] }];
     promises.push(
-      CourseService.GetAllCourses().then(courses => {
+      CourseService.GetAllCourses(select, populate).then(courses => {
         this.courses = courses;
       })
     );
@@ -127,6 +130,7 @@ export default {
       this.loading = false;
     });
   },
+
   methods: {
     restart() {
       this.loading = true;
@@ -140,7 +144,6 @@ export default {
           this.courses = data.courses;
           this.loading = false;
           this.$store.commit("setSchool", data.school._id);
-          //   this.$router.go();
         });
     },
 
@@ -185,7 +188,9 @@ export default {
 
     createSolutions() {},
 
-    courseWithTeacher: item => item.name + " - " + item.teachers[0].name,
+    courseWithTeacher: item => {
+      return item.name + " - " + item.teachers[0].name;
+    },
 
     courseObj: item => item
   }

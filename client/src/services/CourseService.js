@@ -21,4 +21,9 @@ export default class CourseService {
         const res = await axios.post(`${config.coursesUrl}/`, courseBody);
         return res.data;
     }
+
+    static async UpdateCourse(id, course) {
+        const res = await axios.patch(`${config.coursesUrl}/${id}`, { course });
+        return res.data;
+    }
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const route = express.Router();
 const Student = require('../models/Student');
 const Course = require('../models/Course');
-const qs = require('qs');
+const helper = require('../helper');
 
 const verifyToken = require('../middlewares/verifyToken');
 const Solution = require('../models/Solution');
@@ -46,7 +46,7 @@ route.get('/:id', verifyToken, (req, res) => {
     const { id } = req.params
     const { populate } = req.query;
 
-    const popArray = populateStringToArray(populate);
+    const popArray = helper.populateStringToArray(populate);
 
     Student.findById(id)
         .populate(popArray)
@@ -59,7 +59,7 @@ route.get('/:id/solutions', verifyToken, (req, res) => {
     const { id } = req.params
     const { select, populate } = req.query;
 
-    const popArray = populateStringToArray(populate);
+    const popArray = helper.populateStringToArray(populate);
 
     Solution.find({ student: id })
         .select(select)
@@ -68,19 +68,5 @@ route.get('/:id/solutions', verifyToken, (req, res) => {
             res.send(solution)
         })
 })
-
-const populateStringToArray = (populateString) => {
-    const popObject = qs.parse(populateString);
-    let popArray = [];
-
-    for (const key in popObject) {
-        if (popObject.hasOwnProperty(key)) {
-            const element = popObject[key];
-            popArray.push(element)
-        }
-    }
-
-    return popArray;
-}
 
 module.exports = route;

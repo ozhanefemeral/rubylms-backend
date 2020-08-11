@@ -184,12 +184,13 @@ async function createSolutions(tasks, savePromises) {
     for (let i = 0; i < tasks.length; i++) {
         const task = tasks[i];
         task.responsibles.forEach(student => {
+            answers = generateAnswers(tasks[i])
             savePromises.push(
                 Solution.create({
                     student,
                     task,
+                    answers,
                     duration: Math.floor(300 + (Math.random() * 10) * 30),
-                    answers: generateAnswers(tasks[i])
                 })
             )
         })

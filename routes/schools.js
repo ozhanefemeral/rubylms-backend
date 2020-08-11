@@ -6,6 +6,8 @@ const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
 const Course = require('../models/Course');
 
+const helper = require('../helper');
+
 route.post('/', (req, res) => {
     School.create(req.body)
         .then(school => {
@@ -50,8 +52,8 @@ route.get('/:id/courses', (req, res) => {
     const { id } = req.params;
 
     const { select, populate } = req.query;
-    const popArray = populateStringToArray(populate);
-    const selectArray = populateStringToArray(select);
+    const popArray = helper.populateStringToArray(populate);
+    const selectArray = helper.populateStringToArray(select);
 
     School.findById(id)
         .then(school => {
@@ -63,19 +65,5 @@ route.get('/:id/courses', (req, res) => {
             res.send(courses);
         })
 })
-
-const populateStringToArray = (populateString) => {
-    const popObject = qs.parse(populateString);
-    let popArray = [];
-
-    for (const key in popObject) {
-        if (popObject.hasOwnProperty(key)) {
-            const element = popObject[key];
-            popArray.push(element)
-        }
-    }
-
-    return popArray;
-}
 
 module.exports = route;

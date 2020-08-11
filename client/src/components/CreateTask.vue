@@ -1,5 +1,9 @@
 <template>
+<<<<<<< HEAD
   <v-dialog persistent v-model="show" max-width="720">
+=======
+  <v-dialog persistent v-model="show" max-width="600px">
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
     <v-card>
       <v-tabs fixed-tabs background-color="primary" dark>
         <v-tab>
@@ -14,6 +18,7 @@
         <v-tab-item>
           <v-card tile elevation="0">
             <v-card-text>
+<<<<<<< HEAD
               <v-text-field
                 prepend-inner-icon="mdi-pen"
                 label="Name"
@@ -31,6 +36,14 @@
                 >
                 </v-text-field>
               </v-col>
+=======
+              <v-text-field label="Name" outlined v-model="name"></v-text-field>
+              <v-textarea
+                v-model="description"
+                label="Description"
+                outlined
+              ></v-textarea>
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
               <div class="mt-5">
                 Add only PDF documents!
                 <v-file-input
@@ -39,24 +52,31 @@
                   v-model="document"
                 ></v-file-input>
               </div>
+<<<<<<< HEAD
               <v-textarea
                 label="Task Description"
                 outlined
                 v-model="description"
               >
               </v-textarea>
+=======
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
             </v-card-text>
           </v-card>
         </v-tab-item>
         <v-tab-item>
           <v-card elevation="0">
             <v-card-text>
+<<<<<<< HEAD
               Total Mark is: {{ totalMark }}
+=======
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
               <v-card
                 outlined
                 class="my-5"
                 v-for="(q, index) in questions"
                 :key="index"
+<<<<<<< HEAD
                 style="border: 1.5px solid rgb(0,0,0, 0.7);"
               >
                 <v-card-text>
@@ -69,11 +89,28 @@
                     rows="1"
                   ></v-textarea>
                   <v-row align="center">
+=======
+              >
+                <v-card-text>
+                  <v-row>
+                    <v-col cols="1">{{ index }}</v-col>
+                    <v-col>
+                      <v-textarea
+                        label="Question Text"
+                        v-model="q.text"
+                        :auto-grow="true"
+                        rows="1"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
                     <v-switch
                       @change="changeAnswerType(index)"
                       :label="q.answerType"
                       class="mx-5"
                     ></v-switch>
+<<<<<<< HEAD
                     <v-col sm="3" cols="12">
                       <v-text-field
                         v-model="q.points"
@@ -141,6 +178,46 @@
                 </v-card-text>
               </v-card>
               <v-btn tile block color="success" @click="addQuestion">
+=======
+                    <v-text-field
+                      label="Answer"
+                      v-if="q.answerType == 'Classical'"
+                      v-model="q.answer"
+                      class="mx-5"
+                    ></v-text-field>
+                    <v-col cols="12" v-if="q.answerType == 'Test'">
+                      <v-row
+                        v-for="(choices, i) in q.choices"
+                        :key="i"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-col cols="10">
+                          <v-textarea
+                            rows="1"
+                            auto-grow
+                            :label="'Choice ' + String.fromCharCode(65 + i)"
+                          ></v-textarea>
+                        </v-col>
+                        <v-checkbox></v-checkbox>
+                        <v-btn icon color="error" @click="removeChoice(q, i)">
+                          <v-icon>
+                            mdi-delete
+                          </v-icon>
+                        </v-btn>
+                      </v-row>
+                      <v-col cols="12">
+                        <v-btn block tile @click="addChoice(q)" color="accent">
+                          Add Choice
+                        </v-btn>
+                      </v-col>
+                    </v-col>
+                    <v-card-text> </v-card-text>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+              <v-btn tile block color="primary" @click="addQuestion">
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
                 Add Question
               </v-btn>
             </v-card-text>
@@ -158,6 +235,10 @@
                 v-if="special"
                 label="Students"
                 chips
+<<<<<<< HEAD
+=======
+                deletable-chips
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
                 multiple
                 :items="students"
                 item-text="name"
@@ -242,8 +323,18 @@ export default {
       });
     },
 
+<<<<<<< HEAD
     addChoice(q) {
       q.choices.push(String.fromCharCode(65 + q.choices.length));
+=======
+    addChoice(question) {
+      console.log(question);
+      question.choices.push("");
+    },
+
+    removeChoice(question, index) {
+      question.choices.splice(index, 1);
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
     },
 
     changeAnswerType(i) {
@@ -277,8 +368,12 @@ export default {
         task.document = document;
       }
 
+<<<<<<< HEAD
       TaskService.CreateTask(task, this.document).then(task => {
         console.log(task);
+=======
+      TaskService.CreateTask(task, this.document).then(() => {
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
         this.value = false;
       });
     },

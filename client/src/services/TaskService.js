@@ -22,6 +22,7 @@ export default class TaskService {
         return res.data;
     }
 
+<<<<<<< HEAD
     static async UpdateSolution(id, solutionBody) {
         const res = await axios.patch(`${config.solutionsUrl}/${id}`, { solutionBody });
         return res.data;
@@ -29,6 +30,10 @@ export default class TaskService {
 
     static async UpdateTask(id, solutionBody) {
         const res = await axios.patch(`${config.solutionsUrl}/${id}`, { solutionBody });
+=======
+    static async UpdateSolution(id, solution) {
+        const res = await axios.patch(`${config.solutionsUrl}/${id}`, { solution });
+>>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
         return res.data;
     }
 }
