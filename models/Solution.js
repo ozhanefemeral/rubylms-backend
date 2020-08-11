@@ -48,17 +48,10 @@ solutionSchema.pre('save', async function (next) {
 
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {
-<<<<<<< HEAD
         const crntQuestion = task.questions[index];
         if (crntQuestion.answer == this.answers[index].value) {
             mark += crntQuestion.points;
             this.answers[index].points = crntQuestion.points;
-=======
-        const currentQuestion = task.questions[index];
-
-        if (currentQuestion.answer == undefined) {
-            continue;
->>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
         }
 
         const answer = currentQuestion.answer.toString().toLowerCase();

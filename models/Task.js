@@ -38,14 +38,6 @@ const taskSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-<<<<<<< HEAD
-=======
-    expirationDate: Date,
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
->>>>>>> c7d0be25c2fc3a553fe4880b76c326fd5046fa95
 })
 
 const Task = mongoose.model('Task', taskSchema);
