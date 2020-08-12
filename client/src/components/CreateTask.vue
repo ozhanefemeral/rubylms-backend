@@ -2,24 +2,13 @@
   <v-dialog persistent v-model="show" max-width="720">
     <v-card>
       <v-tabs fixed-tabs background-color="primary" dark>
-        <v-tab>
-          General
-        </v-tab>
-        <v-tab>
-          Questions
-        </v-tab>
-        <v-tab>
-          Responsibles
-        </v-tab>
+        <v-tab>General</v-tab>
+        <v-tab>Questions</v-tab>
+        <v-tab>Responsibles</v-tab>
         <v-tab-item>
           <v-card tile elevation="0">
             <v-card-text>
-              <v-text-field
-                prepend-inner-icon="mdi-pen"
-                label="Name"
-                outlined
-                v-model="name"
-              ></v-text-field>
+              <v-text-field prepend-inner-icon="mdi-pen" label="Name" outlined v-model="name"></v-text-field>
               <v-col sm="3" cols="12" offset-sm="9">
                 <v-text-field
                   v-model="chances"
@@ -28,23 +17,13 @@
                   type="number"
                   min="1"
                   max="5"
-                >
-                </v-text-field>
+                ></v-text-field>
               </v-col>
               <div class="mt-5">
                 Add only PDF documents!
-                <v-file-input
-                  label="Add Document"
-                  accept=".pdf"
-                  v-model="document"
-                ></v-file-input>
+                <v-file-input label="Add Document" accept=".pdf" v-model="document"></v-file-input>
               </div>
-              <v-textarea
-                label="Task Description"
-                outlined
-                v-model="description"
-              >
-              </v-textarea>
+              <v-textarea label="Task Description" outlined v-model="description"></v-textarea>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -69,11 +48,7 @@
                     rows="1"
                   ></v-textarea>
                   <v-row align="center">
-                    <v-switch
-                      @change="changeAnswerType(index)"
-                      :label="q.answerType"
-                      class="mx-5"
-                    ></v-switch>
+                    <v-switch @change="changeAnswerType(index)" :label="q.answerType" class="mx-5"></v-switch>
                     <v-col sm="3" cols="12">
                       <v-text-field
                         v-model="q.points"
@@ -103,9 +78,7 @@
                           tile
                           block
                           color="primary"
-                        >
-                          Add Choice
-                        </v-btn>
+                        >Add Choice</v-btn>
                       </v-col>
                       <v-col>
                         <v-select
@@ -115,17 +88,11 @@
                           :disabled="q.choices.length == 0"
                           :items="q.choices"
                           v-model="q.answer"
-                        >
-                        </v-select>
+                        ></v-select>
                       </v-col>
                     </v-row>
                     <v-row class="px-3 my-3">
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        v-for="(c, cIndex) in q.choices"
-                        :key="cIndex"
-                      >
+                      <v-col cols="12" sm="6" v-for="(c, cIndex) in q.choices" :key="cIndex">
                         <v-textarea
                           rows="1"
                           auto-grow
@@ -140,9 +107,7 @@
                   </div>
                 </v-card-text>
               </v-card>
-              <v-btn tile block color="success" @click="addQuestion">
-                Add Question
-              </v-btn>
+              <v-btn tile block color="success" @click="addQuestion">Add Question</v-btn>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -150,10 +115,7 @@
           <v-card tile elevation="0" height="500px">
             <v-card-text>
               <p>Is it only for selected students?</p>
-              <v-switch
-                v-model="special"
-                :label="special.toString()"
-              ></v-switch>
+              <v-switch v-model="special" :label="special.toString()"></v-switch>
               <v-autocomplete
                 v-if="special"
                 label="Students"
@@ -163,8 +125,7 @@
                 item-text="name"
                 item-value="_id"
                 v-model="selectedStudents"
-              >
-              </v-autocomplete>
+              ></v-autocomplete>
             </v-card-text>
           </v-card>
         </v-tab-item>
@@ -182,7 +143,13 @@ import TaskService from "../services/TaskService";
 // import CourseService from "../services/CourseService";
 import FileService from "../services/FileService";
 export default {
-  props: ["value", "students", "course"],
+  props: ["value", "students", "course", "task"],
+
+  created() {
+    if (this.task) {
+      console.log(this.task);
+    }
+  },
 
   data() {
     return {
@@ -195,7 +162,7 @@ export default {
       chances: 1,
       special: false,
       selectedStudents: [],
-      description: ""
+      description: "",
     };
   },
 
@@ -206,16 +173,16 @@ export default {
       },
       set(value) {
         this.$emit("input", value);
-      }
+      },
     },
 
     totalMark() {
       let total = 0;
-      this.questions.forEach(q => {
+      this.questions.forEach((q) => {
         total += parseFloat(q.points);
       });
       return total;
-    }
+    },
   },
 
   watch: {
@@ -228,7 +195,7 @@ export default {
       if (val < 1 || val > 5) {
         this.chances = 1;
       }
-    }
+    },
   },
 
   methods: {
@@ -238,7 +205,7 @@ export default {
         answer: "",
         points: 0,
         answerType: "Classical",
-        choices: []
+        choices: [],
       });
     },
 
@@ -265,7 +232,7 @@ export default {
         isOnlyOnce: this.isOnlyOnce,
         responsibles: this.students,
         course: this.course,
-        description: this.description
+        description: this.description,
       };
 
       if (this.special) {
@@ -277,7 +244,7 @@ export default {
         task.document = document;
       }
 
-      TaskService.CreateTask(task, this.document).then(task => {
+      TaskService.CreateTask(task, this.document).then((task) => {
         console.log(task);
         this.value = false;
       });
@@ -296,7 +263,7 @@ export default {
 
     checkCorrect(q, c) {
       return q.answer == c ? "success" : "";
-    }
-  }
+    },
+  },
 };
 </script>

@@ -8,6 +8,7 @@ const Teacher = require('../models/Teacher')
 
 route.post('/login/student', (req, res) => {
     const { phone, password } = req.body;
+    console.log(phone, password);
     Student.findOne({ phone })
         .then(student => {
             console.log(student);

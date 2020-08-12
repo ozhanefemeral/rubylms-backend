@@ -17,7 +17,8 @@ const taskSchema = new Schema({
     chances: {
         type: Number,
         min: 1,
-        max: 5
+        max: 5,
+        default: 1
     },
     solutions: {
         type: [Schema.Types.ObjectId],
