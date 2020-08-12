@@ -37,7 +37,12 @@ route.delete('/restart', async (req, res) => {
     await createSolutions(tasks, savePromises)
 
     Promise.all(savePromises)
-        .then(res.send({ school, teachers, students, courses }))
+        .then(() => {
+            return res.send({ school, teachers, students, courses })
+        })
+        .then(() => {
+            console.log("Restart completed.");
+        })
 })
 
 route.get('/school/', (req, res) => {

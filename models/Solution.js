@@ -2,17 +2,18 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 
 const solutionSchema = new Schema({
-    answers: {
-        type: [{
-            value: {
-                type: String
-            },
-            points: {
-                type: Number,
-                default: 0
-            }
-        }],
-    },
+    answers: [Object],
+    // answers: {
+    //     type: [{
+    //         value: {
+    //             type: String
+    //         },
+    //         points: {
+    //             type: Number,
+    //             default: 0
+    //         }
+    //     }],
+    // },
     task: {
         type: Schema.Types.ObjectId,
         ref: 'Task'
@@ -48,17 +49,15 @@ solutionSchema.pre('save', async function (next) {
 
     let mark = 0;
     for (let index = 0; index < task.questions.length; index++) {
-        const crntQuestion = task.questions[index];
-        if (crntQuestion.answer == this.answers[index].value) {
-            mark += crntQuestion.points;
-            this.answers[index].points = crntQuestion.points;
+        const currentQuestion = task.questions[index];
+        if (currentQuestion.answer == this.answers[index].value) {
+            mark += currentQuestion.points;
+            this.answers[index].points = currentQuestion.points;
         }
 
-        const answer = currentQuestion.answer.toString().toLowerCase();
+        let studentAnswer = currentQuestion.answer.toString().toLowerCase();
 
-        let studentAnswer;
-
-        if (answer == this.answers[index].toLowerCase()) {
+        if (studentAnswer == this.answers[index].value.toString().toLowerCase()) {
             studentAnswer.value = this.answers[index];
             studentAnswer.points = currentQuestion.points;
         }

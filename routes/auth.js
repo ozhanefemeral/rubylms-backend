@@ -49,6 +49,4 @@ route.post('/login/teacher', (req, res) => {
         })
 })
 
-
-
 module.exports = route;
