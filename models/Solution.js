@@ -50,14 +50,13 @@ solutionSchema.pre('save', async function (next) {
 
     for (let index = 0; index < task.questions.length; index++) {
         const currentQuestion = task.questions[index];
-        if (currentQuestion.answer == this.answers[index].value) {
+
+        let studentAnswer = this.answers[index].value.toString().toLowerCase();
+
+        if (currentQuestion.answer.toString().toLowerCase() == studentAnswer) {
             this.answers[index].points = currentQuestion.points;
-        }
-
-        let studentAnswer = currentQuestion.answer.toString().toLowerCase();
-
-        if (studentAnswer == this.answers[index].value.toString().toLowerCase()) {
-            studentAnswer.points = currentQuestion.points;
+        } else {
+            this.answers[index].points = 0;
         }
     }
 
@@ -75,3 +74,4 @@ solutionSchema.pre('save', async function (next) {
 const Solution = mongoose.model('Solution', solutionSchema);
 
 module.exports = Solution;
+
