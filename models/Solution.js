@@ -51,9 +51,9 @@ solutionSchema.pre('save', async function (next) {
     for (let index = 0; index < task.questions.length; index++) {
         const currentQuestion = task.questions[index];
 
-        let studentAnswer = this.answers[index].value.toString().toLowerCase();
+        let studentAnswer = String(this.answers[index].value).toLowerCase();
 
-        if (currentQuestion.answer.toString().toLowerCase() == studentAnswer) {
+        if (String(currentQuestion.answer).toLowerCase() == studentAnswer) {
             this.answers[index].points = currentQuestion.points;
         } else {
             this.answers[index].points = 0;

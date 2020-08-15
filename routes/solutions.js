@@ -10,6 +10,7 @@ const qs = require('qs');
 
 route.post('/', verifyToken, (req, res) => {
     const { populate } = req.body;
+    console.log(populate);
     Solution.create(req.body)
         .then(solution => {
             console.log(solution);
