@@ -9,6 +9,7 @@ const verifyToken = require('../middlewares/verifyToken');
 const qs = require('qs');
 
 route.post('/', verifyToken, (req, res) => {
+    const { populate } = req.body;
     Solution.create(req.body)
         .then(solution => {
             console.log(solution);

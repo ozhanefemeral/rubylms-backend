@@ -204,7 +204,7 @@ async function createSolutions(tasks, savePromises) {
 
 function generateTask() {
     let questions = []
-    let name = "Example Task"
+    let name = faker.random.words(1);
 
     for (let i = 0; i < 10; i++) {
         if (i < 5) {
