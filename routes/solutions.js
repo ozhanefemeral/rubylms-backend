@@ -11,7 +11,9 @@ const qs = require('qs');
 route.post('/', verifyToken, (req, res) => {
     Solution.create(req.body)
         .then(solution => {
-            solution.populate({ path: 'task', model: 'Task', select: ['name', 'solutions'], populate: { path: 'solutions', model: 'Solution', select: ['mark', 'answers', 'duration'] } })
+            return solution.populate({ path: 'task', model: 'Task', select: ['name', 'solutions'], populate: { path: 'solutions', model: 'Solution', select: ['mark', 'duration'] } })
+        })
+        .then(solution => {
             res.send(solution);
         })
 })
