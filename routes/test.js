@@ -20,6 +20,10 @@ const COURSE_NAMES = [
     "Linguistics", "Geography", "Programming"
 ]
 
+const TASK_NAMES = [
+    "Midterm Exam", "Homework", "Project", "Presentation", "Task", "Assignment", "Reading", "Writing", "Final Exam"
+]
+
 const STUDENT_COUNT = 10;
 const TEACHER_COUNT = 10;
 const TASK_COUNT = 10;
@@ -204,7 +208,8 @@ async function createSolutions(tasks, savePromises) {
 
 function generateTask() {
     let questions = []
-    let name = faker.random.words(1);
+    const rnd = Math.floor(Math.random() * COURSE_NAMES.length);
+    let name = TASK_NAMES[rnd];
 
     for (let i = 0; i < 10; i++) {
         if (i < 5) {
