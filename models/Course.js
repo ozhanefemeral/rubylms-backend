@@ -24,7 +24,8 @@ const courseSchema = new Schema({
     },
     documents: {
         type: [String]
-    }
+    },
+    image: String
 })
 
 const Course = mongoose.model('Course', courseSchema);

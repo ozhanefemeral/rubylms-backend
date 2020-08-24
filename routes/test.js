@@ -208,7 +208,7 @@ async function createSolutions(tasks, savePromises) {
 
 function generateTask() {
     let questions = []
-    const rnd = Math.floor(Math.random() * COURSE_NAMES.length);
+    const rnd = Math.floor(Math.random() * TASK_NAMES.length);
     let name = TASK_NAMES[rnd];
 
     for (let i = 0; i < 10; i++) {
