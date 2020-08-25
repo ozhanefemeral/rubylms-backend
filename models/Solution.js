@@ -38,6 +38,7 @@ const solutionSchema = new Schema({
     },
     solvedAt: {
         type: Date,
+        default: Date.now()
     },
     comment: String
 })
