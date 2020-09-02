@@ -1,8 +1,5 @@
 const express = require('express');
 const route = express.Router();
-const Task = require('../models/Task');
-const Course = require('../models/Course');
-const Student = require('../models/Student');
 const Solution = require('../models/Solution');
 const verifyToken = require('../middlewares/verifyToken');
 

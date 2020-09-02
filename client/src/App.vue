@@ -85,6 +85,11 @@ export default {
         title: "Courses"
       },
       {
+        to: "/exams",
+        icon: "mdi-document",
+        title: "Exams"
+      },
+      {
         to: "/test",
         icon: "mdi-cogs",
         title: "Test"

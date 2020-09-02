@@ -36,6 +36,11 @@ const routes = [
     component: () => import('../views/Teachers.vue')
   },
   {
+    path: '/exams',
+    name: 'Exams',
+    component: () => import('../views/Exams.vue')
+  },
+  {
     path: '/students',
     name: 'Students',
     component: () => import('../views/Students.vue')
@@ -59,6 +64,11 @@ const routes = [
     path: '/task/:taskId',
     name: 'TaskDetails',
     component: () => import('../views/TaskDetails.vue'),
+  },
+  {
+    path: '/exams/:examId',
+    name: 'ExamDetails',
+    component: () => import('../views/ExamDetails.vue'),
   },
   {
     path: '/test',
