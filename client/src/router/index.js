@@ -36,11 +36,6 @@ const routes = [
     component: () => import('../views/Teachers.vue')
   },
   {
-    path: '/exams',
-    name: 'Exams',
-    component: () => import('../views/Exams.vue')
-  },
-  {
     path: '/students',
     name: 'Students',
     component: () => import('../views/Students.vue')
@@ -65,11 +60,11 @@ const routes = [
     name: 'TaskDetails',
     component: () => import('../views/TaskDetails.vue'),
   },
-  {
-    path: '/exams/:examId',
-    name: 'ExamDetails',
-    component: () => import('../views/ExamDetails.vue'),
-  },
+  // {
+  //   path: '/exams/:examId',
+  //   name: 'ExamDetails',
+  //   component: () => import('../views/ExamDetails.vue'),
+  // },
   {
     path: '/test',
     name: 'Test',
@@ -78,7 +73,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'hash',
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })

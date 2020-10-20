@@ -1,1 +1,6 @@
-module.exports = { devServer: { historyApiFallback: true } };
+module.exports = {
+  //...
+  historyApiFallback: {
+    index: 'build/index.html'
+  },
+};

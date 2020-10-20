@@ -1,10 +1,10 @@
 <template>
   <div>
-    <v-btn color="primary" class="mx-5" @click="restart">Restart!</v-btn>
+    <v-btn tile color="error" class="mx-1" @click="restart">Restart!</v-btn>
     <v-divider class="my-5"> </v-divider>
     <v-row>
-      <v-col cols="3" v-if="courses">
-        <v-card>
+      <v-col cols="12" md="3" v-if="courses">
+        <v-card elevation="2" outlined>
           <v-card-text>
             <v-select
               label="Courses"
@@ -26,8 +26,8 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="3" v-if="teachers">
-        <v-card>
+      <v-col cols="12" md="3" v-if="teachers">
+        <v-card elevation="2" outlined>
           <v-card-text>
             <v-select
               label="Teachers"
@@ -89,7 +89,7 @@ const COURSE_NAMES = [
   "Public Speaking",
   "Linguistics",
   "Geography",
-  "Programming"
+  "Programming",
 ];
 
 export default {
@@ -100,20 +100,20 @@ export default {
       courses: [],
       selectedCourse: null,
       selectedTeacher: null,
-      loading: true
+      loading: true,
     };
   },
   created() {
     let promises = [];
 
     promises.push(
-      StudentService.GetAllStudents().then(students => {
+      StudentService.GetAllStudents().then((students) => {
         this.students = students;
       })
     );
 
     promises.push(
-      TeacherService.GetAllTeachers().then(teachers => {
+      TeacherService.GetAllTeachers().then((teachers) => {
         this.teachers = teachers;
       })
     );
@@ -121,7 +121,7 @@ export default {
     const select = ["name", "_id", "teachers", "students"];
     const populate = [{ path: "teachers", model: "Teacher", select: ["name"] }];
     promises.push(
-      CourseService.GetAllCourses(select, populate).then(courses => {
+      CourseService.GetAllCourses(select, populate).then((courses) => {
         this.courses = courses;
       })
     );
@@ -137,8 +137,8 @@ export default {
 
       axios
         .delete(`/api/test/restart`)
-        .then(res => res.data)
-        .then(data => {
+        .then((res) => res.data)
+        .then((data) => {
           this.students = data.students;
           this.teachers = data.teachers;
           this.courses = data.courses;
@@ -160,10 +160,10 @@ export default {
         name,
         students: this.students,
         teachers: [this.selectedTeacher],
-        school: this.$store.state.school
+        school: this.$store.state.school,
       };
 
-      CourseService.CreateCourse(courseBody).then(course => {
+      CourseService.CreateCourse(courseBody).then((course) => {
         this.courses.push(course);
         this.loading = false;
       });
@@ -174,13 +174,13 @@ export default {
     createTask() {
       const body = {
         course: this.selectedCourse._id,
-        responsibles: this.selectedCourse.students
+        responsibles: this.selectedCourse.students,
       };
       this.loading = true;
 
       axios
         .post(`/api/test/task`, body)
-        .then(res => res.data)
+        .then((res) => res.data)
         .then(() => {
           this.loading = false;
         });
@@ -188,12 +188,12 @@ export default {
 
     createSolutions() {},
 
-    courseWithTeacher: item => {
+    courseWithTeacher: (item) => {
       return item.name + " - " + item.teachers[0].name;
     },
 
-    courseObj: item => item
-  }
+    courseObj: (item) => item,
+  },
 };
 </script>
 

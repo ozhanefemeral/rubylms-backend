@@ -23,7 +23,7 @@
       @input="itemSelected"
     >
       <template v-slot:item.actions="{ item }">
-        <v-icon color="accent" class="mr-2" @click="viewItem(item)">
+        <v-icon color="primary" class="mr-2" @click="viewItem(item)">
           mdi-magnify
         </v-icon>
       </template>

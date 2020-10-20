@@ -1,28 +1,18 @@
 <template>
   <div>
-    <v-btn @click="showEnrollDialog = true" color="primary" tile>
-      Enroll Course
-    </v-btn>
+    <v-btn @click="showEnrollDialog = true" color="primary" tile>Enroll Course</v-btn>
     <v-row v-if="student">
       <v-col cols="12" lg="6">
         <v-card raised>
-          <v-card-title>
-            Overall Performance
-          </v-card-title>
+          <v-card-title>Overall Performance</v-card-title>
           <v-card-text>
-            <apexchart
-              type="bar"
-              :options="overallChartOptions"
-              :series="overallSeries"
-            ></apexchart>
+            <apexchart type="bar" :options="overallChartOptions" :series="overallSeries"></apexchart>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="12" lg="6">
         <v-card raised>
-          <v-card-title>
-            Course Performance
-          </v-card-title>
+          <v-card-title>Course Performance</v-card-title>
           <v-card-text>
             <v-select
               label="Enrolled Course"
@@ -31,11 +21,7 @@
               item-text="name"
               item-value="_id"
             ></v-select>
-            <apexchart
-              type="line"
-              :options="courseChartOptions"
-              :series="courseSeries"
-            ></apexchart>
+            <apexchart type="line" :options="courseChartOptions" :series="courseSeries"></apexchart>
           </v-card-text>
         </v-card>
       </v-col>
@@ -66,7 +52,7 @@ import CustomTable from "@/components/CustomTable";
 export default {
   components: {
     customdialog,
-    CustomTable
+    CustomTable,
   },
 
   data() {
@@ -77,31 +63,31 @@ export default {
       datacollection: null,
       courseChartOptions: {
         chart: {
-          id: "vuechart-example"
+          id: "vuechart-example",
         },
         yaxis: {
           min: 0,
-          max: 100.1
-        }
+          max: 100.1,
+        },
       },
       courseSeries: [],
       overallChartOptions: {
         chart: {
-          id: "vuechart-example"
+          id: "vuechart-example",
         },
         xaxis: {
-          tickAmount: "dataPoints"
-        }
+          tickAmount: "dataPoints",
+        },
       },
       overallSeries: [
         {
           name: "Student Average",
-          data: new Array()
+          data: new Array(),
         },
         {
           name: "Course Average",
-          data: new Array()
-        }
+          data: new Array(),
+        },
       ],
       solutions: [],
       selectedCoursesEnroll: [],
@@ -112,14 +98,14 @@ export default {
         {
           text: "Name",
           align: "start",
-          value: "name"
+          value: "name",
         },
         {
           text: "Teacher",
           align: "start",
-          value: "teachers"
-        }
-      ]
+          value: "teachers",
+        },
+      ],
     };
   },
 
@@ -138,13 +124,13 @@ export default {
           populate: {
             path: "solutions",
             model: "Solution",
-            select: ["mark", "student"]
-          }
-        }
-      }
+            select: ["mark", "student"],
+          },
+        },
+      },
     ];
 
-    StudentService.GetStudent(this.studentId, populateBody).then(student => {
+    StudentService.GetStudent(this.studentId, populateBody).then((student) => {
       this.student = student;
 
       for (let i = 0; i < student.courses.length; i++) {
@@ -183,57 +169,59 @@ export default {
 
         let data0 = {
           x: c.name,
-          y: studentCourseAverage
+          y: studentCourseAverage,
         };
 
         let data1 = {
           x: c.name,
-          y: courseAverage
+          y: courseAverage,
         };
 
         this.overallSeries[0].data.push(data0);
         this.overallSeries[1].data.push(data1);
       }
+
+      console.log(student);
     });
   },
 
   watch: {
     selectedCourse() {
       const course = this.student.courses.find(
-        c => c._id == this.selectedCourse
+        (c) => c._id == this.selectedCourse
       );
 
       this.courseSeries = [
         {
           name: "Student Mark",
-          data: new Array()
+          data: new Array(),
         },
         {
           name: "Task Average",
-          data: new Array()
-        }
+          data: new Array(),
+        },
       ];
 
       for (let i = 0; i < course.tasks.length; i++) {
         const task = course.tasks[i];
 
         let studentSolutions = task.solutions.filter(
-          s => s.student === this.studentId
+          (s) => s.student === this.studentId
         );
 
         let sum = 0;
-        studentSolutions.forEach(s => {
+        studentSolutions.forEach((s) => {
           sum += s.mark;
         });
 
         let data0 = {
           x: task.name,
-          y: sum / studentSolutions.length || 0
+          y: sum / studentSolutions.length || 0,
         };
 
         let data1 = {
           x: task.name,
-          y: task.average
+          y: task.average,
         };
 
         this.courseSeries[0].data.push(data0);
@@ -246,17 +234,17 @@ export default {
       if (this.showEnrollDialog && this.allCourses.length == 0) {
         const select = ["name", "_id", "teachers"];
         const populate = [
-          { path: "teachers", model: "Teacher", select: ["name"] }
+          { path: "teachers", model: "Teacher", select: ["name"] },
         ];
-        CourseService.GetAllCourses(select, populate).then(courses => {
-          courses.forEach(element => {
-            element.teachers = element.teachers.map(t => t.name + " ");
+        CourseService.GetAllCourses(select, populate).then((courses) => {
+          courses.forEach((element) => {
+            element.teachers = element.teachers.map((t) => t.name + " ");
           });
           this.allCourses = courses;
           this.loading = false;
         });
       }
-    }
+    },
   },
 
   methods: {
@@ -266,9 +254,9 @@ export default {
     },
 
     onItemSelected(selected) {
-      this.selectedCoursesEnroll = selected.map(e => e._id);
-    }
-  }
+      this.selectedCoursesEnroll = selected.map((e) => e._id);
+    },
+  },
 };
 </script>
 

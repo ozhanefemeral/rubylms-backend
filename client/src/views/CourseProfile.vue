@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 v-if="course != undefined">
+    <!-- <h1 v-if="course != undefined">
       {{ course.name }},
       <br />
       <span v-for="(t, i) in course.teachers" :key="i">
@@ -8,34 +8,83 @@
       </span>
       <br />
       {{ courseAverage }}
-    </h1>
+    </h1> -->
     <v-divider></v-divider>
 
-    <v-btn
-      tile
-      color="primary"
-      class="mt-2 mr-2"
-      @click="showCreateTask = true"
-    >
-      Create Task
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          tile
+          class="mt-2 mr-2"
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          <v-icon class="mr-2">mdi-magnify</v-icon>
+          Görüntüle
+        </v-btn>
+      </template>
+      <v-list elevation="10">
+        <v-list-item>
+          <v-btn
+            block
+            tile
+            color="primary"
+            class="mr-2 mt-2"
+            @click="showStudents = true"
+          >
+            View Students
+          </v-btn>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
-    <v-btn tile color="primary" class="mr-2 mt-2" @click="showStudents = true">
-      View Students
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn tile class="mt-2" color="accent" dark v-bind="attrs" v-on="on">
+          <v-icon class="mr-2">mdi-pencil-outline</v-icon>
+          Aksiyonlar
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item>
+          <v-btn
+            tile
+            block
+            color="accent"
+            class="mt-2 mr-2"
+            @click="showCreateTask = true"
+          >
+            Ödev Oluştur
+          </v-btn>
+        </v-list-item>
 
-    <v-btn
-      tile
-      color="primary"
-      class="mr-2 mt-2"
-      @click="showAllStudents = true"
-    >
-      Enroll Students
-    </v-btn>
+        <v-list-item>
+          <v-btn
+            block
+            tile
+            color="accent"
+            class="mr-2 mt-2"
+            @click="showAllStudents = true"
+          >
+            Enroll Students
+          </v-btn>
+        </v-list-item>
 
-    <v-btn tile color="accent" class="mr-2 mt-2" @click="showTeachers = true">
-      Change Teachers
-    </v-btn>
+        <v-list-item>
+          <v-btn
+            tile
+            block
+            color="accent"
+            class="mr-2 mt-2"
+            @click="showTeachers = true"
+          >
+            Change Teachers
+          </v-btn>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
     <v-divider class="mt-2"></v-divider>
 
@@ -87,7 +136,7 @@
     <v-divider></v-divider>
     <v-row v-if="course != undefined">
       <v-col md="4" lg="3" v-for="(task, index) in course.tasks" :key="index">
-        <v-card raised tile outlined>
+        <v-card elevation="2" tile outlined>
           <v-card-text>
             <p class="text-center text-h4 primary--text">{{ task.name }}</p>
             <v-divider></v-divider>
@@ -123,8 +172,8 @@
                 <v-list-item-action>
                   {{
                     task.createdAt.substr(0, 10) +
-                      " " +
-                      task.createdAt.substr(11, 4)
+                    " " +
+                    task.createdAt.substr(11, 4)
                   }}
                 </v-list-item-action>
               </v-list-item>
@@ -162,7 +211,7 @@ export default {
   components: {
     CreateTask,
     CustomTable,
-    customdialog
+    customdialog,
   },
 
   data() {
@@ -183,13 +232,13 @@ export default {
         {
           text: "Name",
           align: "start",
-          value: "name"
+          value: "name",
         },
         {
           text: "Average",
-          value: "average"
-        }
-      ]
+          value: "average",
+        },
+      ],
     };
   },
 
@@ -203,15 +252,15 @@ export default {
         populate: {
           path: "solutions",
           model: "Solution",
-          select: ["mark", "student", "solvedAt"]
-        }
+          select: ["mark", "student", "solvedAt"],
+        },
       },
       { path: "students", model: "Student", select: ["_id", "name"] },
-      { path: "teachers", model: "Teacher", select: ["_id", "name"] }
+      { path: "teachers", model: "Teacher", select: ["_id", "name"] },
     ];
-    CourseService.GetCourse(this.courseId, populateBody).then(course => {
+    CourseService.GetCourse(this.courseId, populateBody).then((course) => {
       this.selectedTeachers = course.teachers;
-      course.tasks.forEach(task => {
+      course.tasks.forEach((task) => {
         let sum = 0;
         const solutionsLength = task.solutions.length;
         for (let i = 0; i < solutionsLength; i++) {
@@ -230,11 +279,13 @@ export default {
         let sum = 0;
         let solutions = [];
 
-        course.tasks.forEach(c => {
-          solutions.push(...c.solutions.filter(c => c.student === student._id));
+        course.tasks.forEach((c) => {
+          solutions.push(
+            ...c.solutions.filter((c) => c.student === student._id)
+          );
         });
 
-        solutions.forEach(s => {
+        solutions.forEach((s) => {
           sum += s.mark;
         });
 
@@ -248,13 +299,13 @@ export default {
   computed: {
     courseAverage() {
       let sum = 0;
-      this.averages.forEach(el => {
+      this.averages.forEach((el) => {
         if (!isNaN(el)) {
           sum += parseFloat(el);
         }
       });
       return (sum / this.averages.length).toFixed(2);
-    }
+    },
   },
 
   methods: {
@@ -264,13 +315,13 @@ export default {
 
     enrollStudents() {
       let enrollPromises = [];
-      this.selectedStudents.forEach(s => {
+      this.selectedStudents.forEach((s) => {
         enrollPromises.push(
           StudentService.EnrollStudent(s._id, [this.courseId])
         );
       });
 
-      Promise.all(enrollPromises).then(resolved => {
+      Promise.all(enrollPromises).then((resolved) => {
         console.log(resolved);
       });
     },
@@ -278,33 +329,33 @@ export default {
     goTaskDetails(task) {
       this.$router.push({
         name: "TaskDetails",
-        params: { task, taskId: task._id }
+        params: { task, taskId: task._id },
       });
     },
 
     goStudentProfile(student) {
       this.$router.push({
         name: "StudentProfile",
-        params: { studentId: student._id }
+        params: { studentId: student._id },
       });
     },
 
     changeTeachers() {
       CourseService.UpdateCourse(this.courseId, {
-        teachers: this.selectedTeachers
-      }).then(updatedCourse => {
+        teachers: this.selectedTeachers,
+      }).then((updatedCourse) => {
         console.log(updatedCourse);
       });
-    }
+    },
   },
 
   watch: {
     showAllStudents() {
       if (this.showAllStudents && this.allStudents.length == 0) {
         this.loading = true;
-        StudentService.GetAllStudents().then(allStudents => {
-          const ids = this.course.students.map(e => e._id);
-          let filtered = allStudents.filter(s => {
+        StudentService.GetAllStudents().then((allStudents) => {
+          const ids = this.course.students.map((e) => e._id);
+          let filtered = allStudents.filter((s) => {
             if (ids.includes(s._id)) {
               return false;
             }
@@ -318,12 +369,12 @@ export default {
 
     showTeachers() {
       if (this.teachers.length == 0) {
-        TeacherService.GetAllTeachers().then(teachers => {
+        TeacherService.GetAllTeachers().then((teachers) => {
           this.teachers = teachers;
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

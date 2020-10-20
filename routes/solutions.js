@@ -26,10 +26,8 @@ route.patch('/:id', verifyToken, (req, res) => {
 })
 
 route.get('/find', verifyToken, (req, res) => {
-    const { query } = req.query;
+    const { query } = req;
     const queryObj = qs.parse(query);
-
-    console.log(queryObj);
 
     Solution.find(queryObj)
         .then(solutions => {
