@@ -20,14 +20,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(history());
 
-app.use('/api/schools', require('./routes/schools'));
-app.use('/api/students', require('./routes/students'));
-app.use('/api/teachers', require('./routes/teachers'));
-app.use('/api/courses', require('./routes/courses'));
-app.use('/api/tasks', require('./routes/tasks'));
-app.use('/api/solutions', require('./routes/solutions'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/comments', require('./routes/comments'));
+app.use('/api/courses', require('./routes/courses'));
 app.use('/api/files', require('./routes/files'));
+app.use('/api/schools', require('./routes/schools'));
+app.use('/api/solutions', require('./routes/solutions'));
+app.use('/api/students', require('./routes/students'));
+app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/test', require('./routes/test'));
 
 app.use(express.static(__dirname + '/public/'));

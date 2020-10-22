@@ -2,73 +2,76 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema
 
 const solutionSchema = new Schema({
-    answers: [Object],
-    // answers: [{
-    //     value: {
-    //         type: String,
-    //         default: ""
-    //     },
-    //     points: {
-    //         type: Number,
-    //         default: 0
-    //     }
-    // }],
-    task: {
-        type: Schema.Types.ObjectId,
-        ref: 'Task'
-    },
-    duration: {
-        type: Number,
-        min: 0,
-        default: 0
-    },
-    isAnswered: {
-        type: Boolean,
-        default: false
-    },
-    mark: {
-        type: Number,
-        min: 0,
-        max: 100,
-        default: 0
-    },
-    student: {
-        type: Schema.Types.ObjectId,
-        ref: 'Student'
-    },
-    solvedAt: {
-        type: Date,
-        default: Date.now()
-    },
-    comment: String
+  answers: [Object],
+  // answers: [{
+  //     value: {
+  //         type: String,
+  //         default: ""
+  //     },
+  //     points: {
+  //         type: Number,
+  //         default: 0
+  //     }
+  // }],
+  task: {
+    type: Schema.Types.ObjectId,
+    ref: 'Task'
+  },
+  duration: {
+    type: Number,
+    min: 0,
+    default: 0
+  },
+  isAnswered: {
+    type: Boolean,
+    default: false
+  },
+  mark: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0
+  },
+  student: {
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  },
+  solvedAt: {
+    type: Date,
+    default: Date.now()
+  },
+  comments: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Comment'
+  }],
 })
 
 solutionSchema.pre('save', async function (next) {
-    const task = await mongoose.model('Task').findById(this.task);
+  const task = await mongoose.model('Task').findById(this.task);
 
-    let mark = 0;
+  let mark = 0;
 
-    for (let index = 0; index < task.questions.length; index++) {
-        const currentQuestion = task.questions[index];
+  for (let index = 0; index < task.questions.length; index++) {
+    const currentQuestion = task.questions[index];
 
-        let studentAnswer = String(this.answers[index].value).toLowerCase();
+    let studentAnswer = String(this.answers[index].value).toLowerCase();
 
-        if (String(currentQuestion.answer).toLowerCase() == studentAnswer) {
-            this.answers[index].points = currentQuestion.points;
-        } else {
-            this.answers[index].points = 0;
-        }
+    if (String(currentQuestion.answer).toLowerCase() == studentAnswer) {
+      this.answers[index].points = currentQuestion.points;
+    } else {
+      this.answers[index].points = 0;
     }
+  }
 
-    this.answers.forEach(a => {
-        mark += a.points;
-    });
+  this.answers.forEach(a => {
+    mark += a.points;
+  });
 
 
-    this.mark = mark;
-    task.solutions.push(this)
-    await task.save()
-    next();
+  this.mark = mark;
+  task.solutions.push(this)
+  await task.save()
+  next();
 })
 
 const Solution = mongoose.model('Solution', solutionSchema);
