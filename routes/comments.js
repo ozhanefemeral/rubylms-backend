@@ -17,6 +17,14 @@ route.post('/', verifyToken, (req, res) => {
     })
 })
 
+route.delete('/:id', verifyToken, (req, res) => {
+  const { id } = req.params;
+  Comment.findByIdAndDelete(id)
+  .then(() => {
+    res.sendStatus(200)
+  })
+})
+
 route.get('/', verifyToken, (req, res) => {
   const { id, model } = req.query;
   mongoose.model(model)
@@ -25,14 +33,8 @@ route.get('/', verifyToken, (req, res) => {
       return doc.populate('comments').execPopulate()
     })
     .then(populated => {
-      console.log(populated);
       res.send(populated.comments)
     })
-  // .then(populated => {
-  //   console.log(populated);
-  //   const { message, by } = populated;
-  //   res.send({ message, by })
-  // })
 })
 
 module.exports = route;

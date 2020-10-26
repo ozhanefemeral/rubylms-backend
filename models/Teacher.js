@@ -37,6 +37,11 @@ teacherSchema.pre('save', function (next) {
   next();
 })
 
+teacherSchema.methods.login = async function (password) {
+  const result = await bcrypt.compare(password, this.password)
+  return result ? this.toObject() : undefined
+}
+
 const Teacher = mongoose.model('Teacher', teacherSchema);
 
 module.exports = Teacher;

@@ -7,7 +7,7 @@ const commentSchema = new Schema({
   for: {
     type: Schema.Types.ObjectId,
     required: true,
-    refPath: 'forModel'
+    refPath: 'forModel',
   },
   forModel: {
     type: String,
@@ -17,6 +17,7 @@ const commentSchema = new Schema({
   by: {
     type: Schema.Types.ObjectId,
     required: true,
+    autopopulate: { select: 'name' },
     refPath: 'byModel'
   },
   byModel: {
@@ -42,6 +43,8 @@ commentSchema.pre('save', async function (next) {
     next();
   }
 })
+
+commentSchema.plugin(require('mongoose-autopopulate'));
 
 const Comment = mongoose.model('Comment', commentSchema);
 
